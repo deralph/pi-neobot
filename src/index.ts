@@ -115,7 +115,15 @@ const start = async () => {
     console.log(mongoUri, "ok");
     await connectDB(mongoUri!);
     console.log("inside db");
+    var date = new Date(
+      new Date().setDate(new Date().getDate() + 30)
+    ).toLocaleDateString();
+    console.log(date);
+    const date1 = new Date().toLocaleDateString();
+    console.log(date1);
+    console.log(new Date(date) > new Date(date1));
     app.listen(port, () => console.log(`server listening at port ${port}`));
+    console.log(path.resolve(__dirname, "../client/build"));
   } catch (error) {
     console.log("connect error");
     console.log(error);

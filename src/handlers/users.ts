@@ -25,7 +25,8 @@ export default function mountUserEndpoints(router: Router) {
 
     const userDetails: User = {
       username: auth.user.username,
-      uid: auth.user.uid,
+      subscribedIn: "",
+      expiresIn: "",
       roles: auth.user.roles,
       requestNo: 0,
     };

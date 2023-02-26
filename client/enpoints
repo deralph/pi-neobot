@@ -1,0 +1,15 @@
+/generate-output this is for recieving answers from to the chat
+
+/user/signin to signin user
+
+/user/signout  to signout user
+
+/payments/incomplete
+
+/payments/approve
+
+/payments/complete
+
+/payments/cancelled_payment
+
+note that for all these action to take place the user must be signed in

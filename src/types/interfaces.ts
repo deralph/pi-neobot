@@ -1,6 +1,7 @@
 export interface User {
   username: string;
-  uid: string;
+  subscribedIn: string;
+  expiresIn: string;
   roles: Array<string> | any;
   requestNo: number;
 }
@@ -8,5 +9,6 @@ export interface User {
 export interface UserModel {
   findById: (username: String) => any;
   updateRequest: (username: String, num: number) => any;
+  subscribeUser: (username: String) => any;
   createUser: (body: User) => any;
 }

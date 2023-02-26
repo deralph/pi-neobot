@@ -2,6 +2,7 @@ import axios from "axios";
 import { Router } from "express";
 import platformAPIClient from "../services/platformAPIClient";
 import "../types/session";
+import user from "../schema/user";
 
 export default function mountPaymentsEndpoints(router: Router) {
   // handle the incomplete payment
@@ -104,15 +105,24 @@ export default function mountPaymentsEndpoints(router: Router) {
       e.g. verify the transaction, deliver the item to the user, etc...
     */
 
-    await orderCollection.updateOne(
-      { pi_payment_id: paymentId },
-      { $set: { txid: txid, paid: true } }
-    );
+    try {
+      await orderCollection.updateOne(
+        { pi_payment_id: paymentId },
+        { $set: { txid: txid, paid: true } }
+      );
 
-    // let Pi server know that the payment is completed
-    await platformAPIClient.post(`/v2/payments/${paymentId}/complete`, {
-      txid,
-    });
+      // let Pi server know that the payment is completed
+      await platformAPIClient.post(`/v2/payments/${paymentId}/complete`, {
+        txid,
+      });
+      const User = user.subscribeUser(req.session.username);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        message: `an error occured and couldn't complete the payment of ${paymentId}`,
+      });
+    }
+
     return res
       .status(200)
       .json({ message: `Completed the payment ${paymentId}` });

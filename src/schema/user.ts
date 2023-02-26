@@ -7,14 +7,15 @@ const userSchema = new Schema<User>({
     required: true,
     unique: true,
   },
-  uid: {
+  subscribedIn: {
     type: String,
-    required: true,
-    unique: true,
+  },
+  expiresIn: {
+    type: String,
   },
   roles: {
     type: Array,
-    required: true,
+    // required: true,
   },
   requestNo: {
     type: Number,
@@ -32,6 +33,22 @@ userSchema.statics.updateRequest = async function (
     { username },
     {
       requestNo: num,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+};
+userSchema.statics.subscribeUser = async function (username: string) {
+  const expiresIn = new Date(
+    new Date().setDate(new Date().getDate() + 30)
+  ).toLocaleDateString();
+  return await this.findOneAndUpdate(
+    { username },
+    {
+      subscribedIn: new Date().toLocaleDateString(),
+      expiresIn,
     },
     {
       new: true,
