@@ -4,10 +4,7 @@ import axios from "axios";
 import Login from "./pages/login";
 import Welcome from "./pages/welcome";
 import ChatPage from "./pages/chatPage";
-<<<<<<< HEAD
-=======
 import TandC from "./pages/TandC";
->>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
 
 type MypaymentMetaData = {};
 
@@ -65,13 +62,10 @@ const config = {
     "Access-Control-Allow-Origin": "*",
   },
 };
-<<<<<<< HEAD
-=======
 export interface MyPaymentMetadata {
   price: number;
   user: User;
 }
->>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -84,10 +78,6 @@ function App() {
     );
     signInUser(authResult);
     setUser(authResult.user);
-<<<<<<< HEAD
-    console.log(user);
-=======
->>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
   };
 
   const signOut = () => {
@@ -103,8 +93,6 @@ function App() {
     return axiosClient.get("/user/signout");
   };
 
-<<<<<<< HEAD
-=======
   const subscribe = async (
     memo: string,
     amount: number,
@@ -121,14 +109,11 @@ function App() {
     console.log(payment);
   };
 
->>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
   const onIncompletePaymentFound = (payment: PaymentDTO) => {
     console.log("onIncompletePaymentFound", payment);
     return axiosClient.post("/payments/incomplete", { payment });
   };
 
-<<<<<<< HEAD
-=======
   const onReadyForServerApproval = (paymentId: string) => {
     console.log("onReadyForServerApproval", paymentId);
     axiosClient.post("/payments/approve", { paymentId }, config);
@@ -152,23 +137,18 @@ function App() {
     }
   };
 
->>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
   return (
     <div className="App">
       <Routes>
         <Route path="/" element={<Welcome />} />
-        <Route path="/login" element={<Login signIn={signIn} />} />
-<<<<<<< HEAD
-        <Route path="/chatpage" element={<ChatPage />} />
-=======
+        <Route path="/login" element={<Login signIn={signIn} user={user} />} />
         <Route path="/terms" element={<TandC />} />
         <Route
           path="/chatpage"
           element={
-            <ChatPage signOut={signOut} user={user} subscribe={subscribe} />
+            <ChatPage signOut={signOut} user={user} />
           }
         />
->>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
       </Routes>
     </div>
   );

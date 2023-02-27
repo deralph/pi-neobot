@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { User } from "../../App";
 
 
 interface Message {   
@@ -9,7 +10,15 @@ interface Message {
     author: string;
   }
 
-const ChatPage = () => {    
+  
+
+
+  interface signOut {
+    signOut: () => void;
+    user:User | null;
+  }
+
+const ChatPage: React.FC<signOut> = ({ signOut }) => {    
     const [messages, setMessages] = useState<Message[]>([])
     const [message, setMessage] = useState<string>('')
   
@@ -44,7 +53,7 @@ const display = async()=>{
  else {
       const newReply: Message = {
         id: messages.length + 1,
-        
+
         content: 'An error occured, try again later',
         author: 'Ai'};
   setMessages([...messages,newMessage,newReply]);
