@@ -26,18 +26,19 @@ const display = async()=>{
         content: message,
         author: 'Me'};
 
-   setMessages([...messages,newMessage]);
- setMessage('')
+  //  setMessages([...messages,newMessage]);
+ 
 
 
  const {data} = await axiosClient.post('/generate-output', {text:message})
+ console.log(data)
 
  if(data.message){
     const newReply: Message = {
         id: messages.length + 1,
         content: data.message,
  author: 'Ai'};
-  setMessages([...messages,newReply]);
+  setMessages([...messages,newMessage, newReply]);
     }
 
  else {
@@ -45,10 +46,10 @@ const display = async()=>{
         id: messages.length + 1,
         content: 'An error occured, try again later',
         author: 'Ai'};
-  setMessages([...messages,newReply]);
+  setMessages([...messages,newMessage,newReply]);
     }
 
-
+setMessage('')
 //  if(messages.length == 1){
 //     const newReply: Message = {
 //         id: messages.length + 1,
