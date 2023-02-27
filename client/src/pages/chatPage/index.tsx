@@ -1,3 +1,4 @@
+import axios from "axios"
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -10,44 +11,56 @@ interface Message {
 
 const ChatPage = () => {    
     const [messages, setMessages] = useState<Message[]>([])
-    const [value, setValue] = useState<string>('')
+    const [message, setMessage] = useState<string>('')
      
+    // const axios = require('axios');
 
-type change = {
-    change:()=> void
-}
+const change = (e :React.ChangeEvent<HTMLInputElement>)=> setMessage(e.target.value)
 
-const change = (e :React.ChangeEvent<HTMLInputElement>)=> setValue(e.target.value)
-
-
-const display =()=>{
+//function for chat messages display
+const display = async()=>{
     const newMessage: Message = {
         id: messages.length + 1,
-        content: value,
+        content: message,
         author: 'Me'};
 
-    
-    console.log(messages)
    setMessages([...messages,newMessage]);
+ setMessage('')
 
-    
- if(messages.length == 1){
+
+ const {data} = await axios.post('/generate-output', {text:message})
+ if(data.message){
     const newReply: Message = {
         id: messages.length + 1,
-        content: 'Thats awsome, my developers are working very hard to make sure Im working perfectly before the let you use me, thank you for understanding',
+        content: data.message,
+ author: 'Ai'};
+  setMessages([...messages,newReply]);
+    }
+
+ else {
+      const newReply: Message = {
+        id: messages.length + 1,
+        content: 'An error occured, try again later',
         author: 'Ai'};
   setMessages([...messages,newReply]);
     }
 
-  else if(messages.length > 2){
-    const newReply: Message = {
-        id: messages.length + 1,
-        content: 'Kindly check back soon',
-        author: 'Ai'};
-  setMessages([...messages,newReply])
-    }
 
-    setValue('')
+//  if(messages.length == 1){
+//     const newReply: Message = {
+//         id: messages.length + 1,
+//         content: 'Thats awsome, my developers are working very hard to make sure Im working perfectly before the let you use me, thank you for understanding',
+//         author: 'Ai'};
+//   setMessages([...messages,newReply]);
+//     }
+
+//   else if(messages.length > 2){
+//     const newReply: Message = {
+//         id: messages.length + 1,
+//         content: 'Kindly check back soon',
+//         author: 'Ai'};
+//   setMessages([...messages,newReply])
+//     }
 
 }
 
@@ -113,7 +126,7 @@ const display =()=>{
 
      {/* message input */}
         <div className="chat-input md:mx-auto md:my-0">
-        <input required type="text" placeholder="Message" className=" text-lg w-full focus:shadow-xl rounded-full py-3 px-4 lg:w-full" onChange={(e)=>change(e)} value={value}/>
+        <input required type="text" placeholder="Message" className=" text-lg w-full focus:shadow-xl rounded-full py-3 px-4 lg:w-full" onChange={(e)=>change(e)} value={message}/>
         <span onClick={()=>display()} className=" material-symbols-outlined bg-cerulean duration-300 text-4xl text-white hover:text-cerulean hover:bg-transparent rounded-full px-3 py-2 ">send</span>  
         </div>
 </div>
