@@ -25,11 +25,17 @@ const ChatPage = () => {
       author: "Me",
     };
 
+<<<<<<< HEAD
     console.log(messages);
     setMessages([...messages, newMessage]);
+=======
+  //  setMessages([...messages,newMessage]);
+ 
+>>>>>>> dbb3b1a1f501af2f56385115c042b1ce233d8a70
 
     const backendURL = "http://localhost:5000";
 
+<<<<<<< HEAD
     const { data } = await axios.post("/generate-output", { text: message });
     if (data.message) {
       const newReply: Message = {
@@ -50,6 +56,35 @@ const ChatPage = () => {
       <div className="hidden bg-dark-green h-full text-white md:block px-3 py-3 fixed left-0 w-1/5 ">
         <div className="flex flex-col justify-between h-[90%]">
           <div className="flex justify-center">History</div>
+=======
+ const {data} = await axiosClient.post('/generate-output', {text:message})
+ console.log(data)
+
+ if(data.message){
+    const newReply: Message = {
+        id: messages.length + 1,
+        content: data.message,
+ author: 'Ai'};
+  setMessages([...messages,newMessage, newReply]);
+    }
+
+ else {
+      const newReply: Message = {
+        id: messages.length + 1,
+        content: 'An error occured, try again later',
+        author: 'Ai'};
+  setMessages([...messages,newMessage,newReply]);
+    }
+
+setMessage('')
+//  if(messages.length == 1){
+//     const newReply: Message = {
+//         id: messages.length + 1,
+//         content: 'Thats awsome, my developers are working very hard to make sure Im working perfectly before the let you use me, thank you for understanding',
+//         author: 'Ai'};
+//   setMessages([...messages,newReply]);
+//     }
+>>>>>>> dbb3b1a1f501af2f56385115c042b1ce233d8a70
 
           <div className="gap-5 flex flex-col">
             <hr />
