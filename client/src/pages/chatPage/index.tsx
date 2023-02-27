@@ -44,6 +44,7 @@ const display = async()=>{
  else {
       const newReply: Message = {
         id: messages.length + 1,
+        
         content: 'An error occured, try again later',
         author: 'Ai'};
   setMessages([...messages,newMessage,newReply]);

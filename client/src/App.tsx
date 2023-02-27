@@ -4,6 +4,10 @@ import axios from "axios";
 import Login from "./pages/login";
 import Welcome from "./pages/welcome";
 import ChatPage from "./pages/chatPage";
+<<<<<<< HEAD
+=======
+import TandC from "./pages/TandC";
+>>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
 
 type MypaymentMetaData = {};
 
@@ -61,6 +65,13 @@ const config = {
     "Access-Control-Allow-Origin": "*",
   },
 };
+<<<<<<< HEAD
+=======
+export interface MyPaymentMetadata {
+  price: number;
+  user: User;
+}
+>>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -73,7 +84,10 @@ function App() {
     );
     signInUser(authResult);
     setUser(authResult.user);
+<<<<<<< HEAD
     console.log(user);
+=======
+>>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
   };
 
   const signOut = () => {
@@ -89,17 +103,72 @@ function App() {
     return axiosClient.get("/user/signout");
   };
 
+<<<<<<< HEAD
+=======
+  const subscribe = async (
+    memo: string,
+    amount: number,
+    paymentMetadata: MyPaymentMetadata
+  ) => {
+    const paymentData = { amount, memo, metadata: paymentMetadata };
+    const callbacks = {
+      onReadyForServerApproval,
+      onReadyForServerCompletion,
+      onCancel,
+      onError,
+    };
+    const payment = await window.Pi.createPayment(paymentData, callbacks);
+    console.log(payment);
+  };
+
+>>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
   const onIncompletePaymentFound = (payment: PaymentDTO) => {
     console.log("onIncompletePaymentFound", payment);
     return axiosClient.post("/payments/incomplete", { payment });
   };
 
+<<<<<<< HEAD
+=======
+  const onReadyForServerApproval = (paymentId: string) => {
+    console.log("onReadyForServerApproval", paymentId);
+    axiosClient.post("/payments/approve", { paymentId }, config);
+  };
+
+  const onReadyForServerCompletion = (paymentId: string, txid: string) => {
+    console.log("onReadyForServerCompletion", paymentId, txid);
+    axiosClient.post("/payments/complete", { paymentId, txid }, config);
+  };
+
+  const onCancel = (paymentId: string) => {
+    console.log("onCancel", paymentId);
+    return axiosClient.post("/payments/cancelled_payment", { paymentId });
+  };
+
+  const onError = (error: Error, payment?: PaymentDTO) => {
+    console.log("onError", error);
+    if (payment) {
+      console.log(payment);
+      // handle the error accordingly
+    }
+  };
+
+>>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
   return (
     <div className="App">
       <Routes>
         <Route path="/" element={<Welcome />} />
         <Route path="/login" element={<Login signIn={signIn} />} />
+<<<<<<< HEAD
         <Route path="/chatpage" element={<ChatPage />} />
+=======
+        <Route path="/terms" element={<TandC />} />
+        <Route
+          path="/chatpage"
+          element={
+            <ChatPage signOut={signOut} user={user} subscribe={subscribe} />
+          }
+        />
+>>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
       </Routes>
     </div>
   );
