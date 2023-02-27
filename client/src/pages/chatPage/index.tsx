@@ -1,3 +1,4 @@
+import axios from "axios"
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -7,46 +8,46 @@ interface Message {
   author: string;
 }
 
-const ChatPage = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [value, setValue] = useState<string>("");
+const ChatPage = () => {    
+    const [messages, setMessages] = useState<Message[]>([])
+    const [value, setValue] = useState<string>('')
+     
 
-  type change = {
-    change: () => void;
-  };
+type change = {
+    change:()=> void
+}
 
-  const change = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-    setValue(e.target.value);
+const change = (e :React.ChangeEvent<HTMLInputElement>)=> setValue(e.target.value)
 
-  const display = () => {
+
+const display =()=>{
     const newMessage: Message = {
-      id: messages.length + 1,
-      content: value,
-      author: "Me",
-    };
-
-    console.log(messages);
-    setMessages([...messages, newMessage]);
-
-    if (messages.length == 1) {
-      const newReply: Message = {
         id: messages.length + 1,
-        content:
-          "Thats awsome, my developers are working very hard to make sure Im working perfectly before the let you use me, thank you for understanding",
-        author: "Ai",
-      };
-      setMessages([...messages, newReply]);
-    } else if (messages.length > 2) {
-      const newReply: Message = {
+        content: value,
+        author: 'Me'};
+
+    
+    console.log(messages)
+   setMessages([...messages,newMessage]);
+
+    
+ if(messages.length == 1){
+    const newReply: Message = {
         id: messages.length + 1,
-        content: "Kindly check back soon",
-        author: "Ai",
-      };
-      setMessages([...messages, newReply]);
+        content: 'Thats awsome, my developers are working very hard to make sure Im working perfectly before the let you use me, thank you for understanding',
+        author: 'Ai'};
+  setMessages([...messages,newReply]);
     }
 
-    setValue("");
-  };
+  else if(messages.length > 2){
+    const newReply: Message = {
+        id: messages.length + 1,
+        content: 'Kindly check back soon',
+        author: 'Ai'};
+  setMessages([...messages,newReply])
+    }
+
+    setValue('')
 
   return (
     <div className="h-full w-full fixed">
@@ -123,19 +124,8 @@ const ChatPage = () => {
 
         {/* message input */}
         <div className="chat-input md:mx-auto md:my-0">
-          <textarea
-            required
-            placeholder="Message"
-            className=" text-lg w-full focus:shadow-xl rounded-full py-3 px-4 lg:w-full"
-            onChange={(e) => change(e)}
-            value={value}
-          />
-          <span
-            onClick={() => display()}
-            className=" material-symbols-outlined bg-cerulean duration-300 text-4xl text-white hover:text-cerulean hover:bg-transparent rounded-full px-3 py-2 "
-          >
-            send
-          </span>
+        <input required type="text" placeholder="Message" className=" text-lg w-full focus:shadow-xl rounded-full py-3 px-4 lg:w-full" onChange={(e)=>change(e)} value={value}/>
+        <span onClick={()=>display()} className=" material-symbols-outlined bg-cerulean duration-300 text-4xl text-white hover:text-cerulean hover:bg-transparent rounded-full px-3 py-2 ">send</span>  
         </div>
       </div>
     </div>
