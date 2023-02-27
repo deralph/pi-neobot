@@ -12,8 +12,10 @@ interface Message {
 const ChatPage = () => {    
     const [messages, setMessages] = useState<Message[]>([])
     const [message, setMessage] = useState<string>('')
-     
-    // const axios = require('axios');
+  
+    // setting up axios
+    const backend_URL = "http://localhost:5000";
+    const axiosClient = axios.create({baseURL:`${backend_URL}`,timeout:20000, withCredentials:true,})
 
 const change = (e :React.ChangeEvent<HTMLInputElement>)=> setMessage(e.target.value)
 
@@ -28,7 +30,8 @@ const display = async()=>{
  setMessage('')
 
 
- const {data} = await axios.post('/generate-output', {text:message})
+ const {data} = await axiosClient.post('/generate-output', {text:message})
+
  if(data.message){
     const newReply: Message = {
         id: messages.length + 1,
