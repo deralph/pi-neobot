@@ -18,7 +18,7 @@ const answer = async (req: Request, res: Response) => {
     });
     const User_ = user.findById(req.session.username);
     if (!User_) {
-      res.status(400).json({
+      res.status(401).json({
         error: " no user found kindly login before use",
       });
       console.log("an error ocurred in the registering of user");
