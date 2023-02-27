@@ -8,21 +8,20 @@ interface Message {
   author: string;
 }
 
-const ChatPage: React.FC = () => {
+const ChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [value, setValue] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
 
-  type change = {
-    change: () => void;
-  };
+  // const axios = require('axios');
 
   const change = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setValue(e.target.value);
+    // setValue(e.target.value);
 
   const display = async () => {
+
     const newMessage: Message = {
       id: messages.length + 1,
-      content: value,
+      content: message,
       author: "Me",
     };
 
@@ -31,34 +30,21 @@ const ChatPage: React.FC = () => {
 
     const backendURL = "http://localhost:5000";
 
-    const axiosClient = axios.create({
-      baseURL: `${backendURL}`,
-      timeout: 20000,
-      withCredentials: true,
-    });
+    const { data } = await axios.post("/generate-output", { text: message });
+    if (data.message) {
+      const newReply: Message = {
+        id: messages.length + 1,
+        content: data.message,
+        author: "Ai",
+      };
+      setMessages([...messages, newReply]);
+    }
 
-    const data = await axiosClient.post("/generate-output", { text: value });
+    // const data = await axiosClient.post("/generate-output", { text: value });
     console.log(data);
 
-    // if (messages.length == 1) {
-    //   const newReply: Message = {
-    //     id: messages.length + 1,
-    //     content:
-    //       "Thats awsome, my developers are working very hard to make sure Im working perfectly before the let you use me, thank you for understanding",
-    //     author: "Ai",
-    //   };
-    //   setMessages([...messages, newReply]);
-    // } else if (messages.length > 2) {
-    //   const newReply: Message = {
-    //     id: messages.length + 1,
-    //     content: "Kindly check back soon",
-    //     author: "Ai",
-    //   };
-    //   setMessages([...messages, newReply]);
-    // }
-
-    setValue("");
-  };
+    setMessage("");
+  }
   return (
     <div className="h-full w-full fixed">
       <div className="hidden bg-dark-green h-full text-white md:block px-3 py-3 fixed left-0 w-1/5 ">
@@ -140,7 +126,7 @@ const ChatPage: React.FC = () => {
             placeholder="Message"
             className=" text-lg w-full focus:shadow-xl rounded-full py-3 px-4 lg:w-full"
             onChange={(e) => change(e)}
-            value={value}
+            value={message}
           />
           <span
             onClick={() => display()}
