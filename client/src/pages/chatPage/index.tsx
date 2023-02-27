@@ -17,7 +17,7 @@ const ChatPage = () => {
   const change = (e: React.ChangeEvent<HTMLInputElement>) =>
     // setValue(e.target.value);
 
-  const display = async () => {
+  const display = async ( ) => {
 
     const newMessage: Message = {
       id: messages.length + 1,
