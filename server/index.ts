@@ -32,6 +32,8 @@ const app: express.Application = express();
 //   });
 // }
 
+
+//for local
 app.use(express.static(path.resolve(__dirname, "../client/build")));
 
 // Log requests to the console in a compact format:
