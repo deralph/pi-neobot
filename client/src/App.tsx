@@ -146,7 +146,7 @@ function App() {
         <Route
           path="/chatpage"
           element={
-            <ChatPage signOut={signOut} user={user} />
+            <ChatPage signOut={signOut} user={user} subscribe={subscribe} />
           }
         />
       </Routes>

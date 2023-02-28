@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { User } from "../../App";
+import { MyPaymentMetadata, User } from "../../App";
 
 
 interface Message {   
@@ -10,17 +10,22 @@ interface Message {
     author: string;
   }
 
-  
 
-
-  interface signOut {
+  interface props {
     signOut: () => void;
-    user:User | null;
+    user: User | null;
+    subscribe: (
+      memo: string,
+      amount: number,
+      paymentMetadata: MyPaymentMetadata
+    )=> void;
+
   }
 
-const ChatPage: React.FC<signOut> = ({ signOut }) => {    
+const ChatPage: React.FC<props> = ({ signOut, user, subscribe }) => {    
     const [messages, setMessages] = useState<Message[]>([])
     const [message, setMessage] = useState<string>('')
+    const [submessage, setSubMessage] = useState<string>('')
   
     // setting up axios
     const backend_URL = "http://localhost:5000";
@@ -38,8 +43,8 @@ const display = async()=>{
   //  setMessages([...messages,newMessage]);
  
 
-
- const {data} = await axiosClient.post('/generate-output', {text:message})
+ try{
+  const {data} = await axiosClient.post('/generate-output', {text:message})
  console.log(data)
 
  if(data.message){
@@ -49,16 +54,30 @@ const display = async()=>{
  author: 'Ai'};
   setMessages([...messages,newMessage, newReply]);
     }
-
- else {
+    else if(data.error && data.error !== 'invalid access token'){
       const newReply: Message = {
         id: messages.length + 1,
-
-        content: 'An error occured, try again later',
+        content: data.error,
         author: 'Ai'};
   setMessages([...messages,newMessage,newReply]);
     }
 
+ else{
+      const newReply: Message = {
+        id: messages.length + 1,
+        content: 'An error occured, try again later',
+        author: 'Ai'};
+  setMessages([...messages,newMessage,newReply]);
+    }
+  }
+  catch(error){
+      const newReply: Message = {
+        id: messages.length + 1,
+        content: 'An error occured, try again later',
+        author: 'Ai'};
+  setMessages([...messages,newMessage,newReply]);
+    }
+  
 setMessage('')
 //  if(messages.length == 1){
 //     const newReply: Message = {
@@ -78,6 +97,18 @@ setMessage('')
 
 }
 
+const sub =async () => {
+  try{
+    await subscribe('subscription for pi-neobot', 5,{
+      price:5,
+      user:user!,
+    });
+  setSubMessage('subscription successful \n Enjoy your features!');
+} catch(error){
+  setSubMessage('Unable to subscribe \n Try again later');
+}
+};
+
     return ( <div className="h-full w-full fixed">
 
 <div className="hidden bg-dark-green h-full text-white md:block px-3 py-3 fixed left-0 w-1/5 ">
@@ -93,12 +124,19 @@ setMessage('')
  <p className="text-white text-xl">Dark mode</p> 
 </div>
 
-  <Link to='/login'>
+  <Link to='/login' onClick={()=>signOut}>
   <div className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] rounded p-2.5 duration-300">
   <span className="material-symbols-outlined">logout</span>
  <p className="text-white text-xl">Logout</p> 
 </div>
            </Link>   
+
+           <Link to='/terms' onClick={()=>signOut}>
+  <div className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] rounded p-2.5 duration-300">
+  <span className="material-symbols-outlined">note</span>
+ <p className="text-white text-xl">Terms and condition</p> 
+</div>
+           </Link>  
   </div>
   
 </div>
@@ -115,7 +153,13 @@ setMessage('')
 <div className=" px-3.5 md:px-10 lg:px-20 h-[89%] overflow-y-scroll">
  {/* intro */}
   <div className="mt-4 mb-2 lg:mt-8 lg:mb-5">
-    <div className="alert">Welcome to Neobot, this is a chat bot that will answer your questions and help you do things faster</div>
+    <div className="p-4 bg-slate-400 my-6 max-w-[500px] mx-auto w-full">
+      <p>CLick here to suscribe and enjoy more benefits {''}
+      <span className="bg-verdigris p-2 text-white ml-4" onClick={()=>sub()}>suscribe</span>
+      </p>
+      {submessage && <p className="mt-30">{submessage}</p>}
+    </div>
+    <div className="alert">{user?.username}, welcome to Neobot, this is a chat bot that will answer your questions and help you do things faster</div>
     <div className="alert">Note that some answers maybe inaccurate</div>
     <div className="alert">This chatbot will not provide answer to inapproprite questions</div>
   </div>

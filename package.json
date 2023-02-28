@@ -7,15 +7,10 @@
     "name": "Pi Core Team"
   },
   "scripts": {
-<<<<<<< HEAD
-    "build": "tsc && cd client && npm install && npm run build",
-    "start": " ts-node-dev ./src/index.ts"
-=======
     "mainBuild": "cd.. && tsc -p .",
     "preBuild": " cd client && npm install && npm run build",
     "start": " ts-node-dev ./src/index.ts",
     "build":"tsc -p ."
->>>>>>> f152c337469d0627ee62e194b7fa8938d798bf73
   },
   "dependencies": {
     "@types/connect-mongo": "^3.1.3",
