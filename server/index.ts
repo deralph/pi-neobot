@@ -22,13 +22,17 @@ import errorMiddleware from "./handlers/errorMIddleware";
 
 const app: express.Application = express();
 
-if (process.env.NODE_ENV === "production") {
-  app.use("/", express.static("../build"));
+// for hosting
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "..", "build", "index.html"));
-  });
-}
+// if (process.env.NODE_ENV === "production") {
+//   app.use("/", express.static("../build"));
+
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+//   });
+// }
+
+app.use(express.static(path.resolve(__dirname, "../client/build")));
 
 // Log requests to the console in a compact format:
 app.use(logger("dev"));
@@ -84,7 +88,7 @@ app.use(errorMiddleware);
 // III. Boot up the app:
 
 const mongoUri = process.env.MONGO_URI;
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 9001;
 
 const start = async () => {
   try {
