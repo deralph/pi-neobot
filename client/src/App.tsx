@@ -141,7 +141,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Welcome />} />
-        <Route path="/login" element={<Login signIn={signIn} />} />
+        <Route path="/login" element={<Login signIn={signIn} user={user} />} />
         <Route path="/terms" element={<TandC />} />
         <Route
           path="/chatpage"

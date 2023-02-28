@@ -2,19 +2,23 @@ import logo from "../assets/images/neobot-logo.png";
 import piLogo from "../assets/images/pi-logo.png";
 import { Navigate } from "react-router-dom";
 import React, { useState } from "react";
+import { User } from "../../App";
 
 interface signIn {
   signIn: () => void;
+  user:User | null;
 }
 
-const Login: React.FC<signIn> = ({ signIn }) => {
+const Login: React.FC<signIn> = ({ signIn,user }) => {
   const [msg, setMsg] = useState<string>("");
   const [change, setChange] = useState<boolean>(false);
 
   const log = async () => {
     try {
       await signIn();
-      setMsg(`login sucessful`);
+      if (user){
+       setMsg(`login sucessful`); 
+      }
       setChange(true);
     } catch (error) {
       setMsg(`login unsucessful`);
@@ -43,7 +47,7 @@ const Login: React.FC<signIn> = ({ signIn }) => {
             Login with Pi
           </button>
           <p className="">{msg}</p>
-          {change && <Navigate to="/chatPage" />}
+          {user && <Navigate to="/chatPage" />}
         </div>
       </div>
     </div>
