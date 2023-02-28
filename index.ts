@@ -36,10 +36,9 @@ app.use(logger("dev"));
 // Full log of all requests to /log/access.log:
 app.use(
   logger("common", {
-    stream: fs.createWriteStream(
-      path.join(__dirname, "..", "log", "access.log"),
-      { flags: "a" }
-    ),
+    stream: fs.createWriteStream(path.join(__dirname, "log", "access.log"), {
+      flags: "a",
+    }),
   })
 );
 
