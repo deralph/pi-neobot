@@ -1,18 +1,11 @@
-# Pi Demo App Backend
+# Neobot Full stack Application
 
-The only variable you need to provide is `PI_API_KEY`, which is required to authorize payments. You receive it
-upon app registration. For more guidelines on registering your app refer to
-the [Pi Developer Guide](https://pi-apps.github.io/community-developer-guide/docs/gettingStarted/devPortal/).
+[Our Official Website](https://neobot.online/).
 
-`FRONTEND_URL` specifies the URL of the frontend app, which by default is `http://localhost:3314`.
-Depending on sandbox settings you're using to preview demo app, you may need to change this value accordingly.
+`Frontend` All frontend files are in the client folder.
 
-The demo app's backend uses a local MongoDB server to store user data and session details.
-
-## Setup
-
+## local preview steps
 ### 1. Install dependencies:
-
 You will need a working NodeJS installation, and `yarn`. **The demo app frontend isn't meant to support npm**.
 In most cases, `yarn` will come along with your NodeJS installation.
 
@@ -89,8 +82,7 @@ Then, recreate the container using the `docker run` command above.
 
 **Options 2: directly install MongoDB on your machine:**
 
-Install MongoDB Community following the
-[official documentation](https://www.mongodb.com/docs/manual/administration/install-community/).
+
 
 Run the server and create a database and a user:
 
