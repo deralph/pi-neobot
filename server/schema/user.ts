@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { User, UserModel } from "../types/interfaces";
+import { User, UserModel } from "../chatGpt/types/interfaces";
 
 const userSchema = new Schema<User>({
   username: {
