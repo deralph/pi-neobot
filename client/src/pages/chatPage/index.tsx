@@ -39,10 +39,7 @@ const display = async()=>{
         id: messages.length + 1,
         content: message,
         author: 'Me'};
-
-  //  setMessages([...messages,newMessage]);
  
-
  try{
   const {data} = await axiosClient.post('/generate-output', {text:message})
  console.log(data)
@@ -79,22 +76,6 @@ const display = async()=>{
     }
   
 setMessage('')
-//  if(messages.length == 1){
-//     const newReply: Message = {
-//         id: messages.length + 1,
-//         content: 'Thats awsome, my developers are working very hard to make sure Im working perfectly before the let you use me, thank you for understanding',
-//         author: 'Ai'};
-//   setMessages([...messages,newReply]);
-//     }
-
-//   else if(messages.length > 2){
-//     const newReply: Message = {
-//         id: messages.length + 1,
-//         content: 'Kindly check back soon',
-//         author: 'Ai'};
-//   setMessages([...messages,newReply])
-//     }
-
 }
 
 const sub =async () => {
@@ -153,19 +134,19 @@ const sub =async () => {
 <div className=" px-3.5 md:px-10 lg:px-20 h-[89%] overflow-y-scroll">
  {/* intro */}
   <div className="mt-4 mb-2 lg:mt-8 lg:mb-5">
-    <div className="p-4 bg-slate-400 my-6 max-w-[500px] mx-auto w-full">
-      <p>CLick here to suscribe and enjoy more benefits {''}
-      <span className="bg-verdigris p-2 text-white ml-4" onClick={()=>sub()}>suscribe</span>
+    <div className="p-4 bg-slate-400 my-6 max-w-[500px] mx-auto w-full rounded">
+      <p>Subscribe to to continue using after free trial expires{''}
+      <span className="bg-verdigris p-2 text-white ml-4 rounded" onClick={()=>sub()}>Subscribe</span>
       </p>
       {submessage && <p className="mt-30">{submessage}</p>}
     </div>
-    <div className="alert">{user?.username}, welcome to Neobot, this is a chat bot that will answer your questions and help you do things faster</div>
+    <div className="alert">Welcome to Neobot, this is a chat bot that will answer your questions and help you do things faster</div>
     <div className="alert">Note that some answers maybe inaccurate</div>
     <div className="alert">This chatbot will not provide answer to inapproprite questions</div>
   </div>
 
 <div className="flex flex-col items-start">
-    <div className="chat-text">Hi, I am NeoBot!</div>
+    <div className="chat-text">Hi {user?.username}, I am NeoBot!</div>
 </div>
 <div className="flex flex-col items-start">
     <div className="chat-text ">I am an Artificially Intelligent chatbot on the Pi Network</div>
