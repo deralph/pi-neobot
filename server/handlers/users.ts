@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import platformAPIClient from "../services/platformAPIClient";
-import { User } from "../chatGpt/types/interfaces";
+import { User } from "../types/interfaces";
 import user from "../schema/user";
 
 export default function mountUserEndpoints(router: Router) {

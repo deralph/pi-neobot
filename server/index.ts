@@ -11,14 +11,14 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import logger from "morgan";
 import { MongoClient } from "mongodb";
-import env from "./server/environments";
-import mountPaymentsEndpoints from "./server/handlers/payments";
-import mountUserEndpoints from "./server/handlers/users";
+import env from "./environments";
+import mountPaymentsEndpoints from "./handlers/payments";
+import mountUserEndpoints from "./handlers/users";
 
-import "./server/chatGpt/types/session";
-import answer from "./server/chatGpt/chat";
-import connectDB from "./server/connectDB";
-import errorMiddleware from "./server/handlers/errorMIddleware";
+import "./types/session";
+import answer from "./chatGpt/chat";
+import connectDB from "./connectDB";
+import errorMiddleware from "./handlers/errorMIddleware";
 
 const app: express.Application = express();
 

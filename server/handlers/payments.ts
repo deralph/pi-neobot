@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Router } from "express";
 import platformAPIClient from "../services/platformAPIClient";
-import "../chatGpt/types/session";
+import "../types/session";
 import user from "../schema/user";
 
 export default function mountPaymentsEndpoints(router: Router) {
