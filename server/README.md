@@ -4,10 +4,9 @@
 
 `Frontend` All frontend files are in the client folder.
 
-## local preview steps
+## local preview steps for frontend
 ### 1. Install dependencies:
-You will need a working NodeJS installation, and `yarn`. **The demo app frontend isn't meant to support npm**.
-In most cases, `yarn` will come along with your NodeJS installation.
+You will need a working NodeJS installation, use 
 
 Install dependencies by running `yarn install`.
 

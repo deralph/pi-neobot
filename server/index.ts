@@ -22,17 +22,17 @@ import errorMiddleware from "./handlers/errorMIddleware";
 
 const app: express.Application = express();
 
-// for hosting
-if (process.env.NODE_ENV === "production") {
-  app.use("/", express.static("../build"));
+// // for hosting
+// if (process.env.NODE_ENV === "production") {
+//   app.use("/", express.static("../build"));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "..", "build", "index.html"));
-  });
-}
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+//   });
+// }
 
-//for local
-// app.use(express.static(path.resolve(__dirname, "../client/build")));
+// for local
+app.use(express.static(path.resolve(__dirname, "../client/build")));
 
 // Log requests to the console in a compact format:
 app.use(logger("dev"));

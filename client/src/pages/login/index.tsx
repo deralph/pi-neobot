@@ -1,6 +1,6 @@
 import logo from "../assets/images/neobot-logo.png";
 import piLogo from "../assets/images/pi-logo.png";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import React, { useState } from "react";
 import { User } from "../../App";
 
@@ -48,6 +48,15 @@ const Login: React.FC<signIn> = ({ signIn,user }) => {
           </button>
           <p className="">{msg}</p>
           {user && <Navigate to="/chatPage" />}
+
+<Link to='/chatPage'>
+<button
+            className="button text-[7vw] md:text-[1.7rem] bg-pi-color hover:bg-pi-color-D w-full lg:w-4/5 gap-5 pl-0 flex justify-center items-center py-3 pr-2">
+            <img src={piLogo} alt="" className="w-10" />
+            Proceed without login
+          </button>
+</Link>
+          
         </div>
       </div>
     </div>

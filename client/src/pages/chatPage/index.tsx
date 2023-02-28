@@ -39,7 +39,8 @@ const display = async()=>{
         id: messages.length + 1,
         content: message,
         author: 'Me'};
- 
+
+ if(message.length>0){
  try{
   const {data} = await axiosClient.post('/generate-output', {text:message})
  console.log(data)
@@ -51,7 +52,8 @@ const display = async()=>{
  author: 'Ai'};
   setMessages([...messages,newMessage, newReply]);
     }
-    else if(data.error && data.error !== 'invalid access token'){
+
+    else if(data.error && (data.error !== 'invalid access token')){
       const newReply: Message = {
         id: messages.length + 1,
         content: data.error,
@@ -59,7 +61,15 @@ const display = async()=>{
   setMessages([...messages,newMessage,newReply]);
     }
 
- else{
+ else if (data.error == 'invalid access token'){
+      const newReply: Message = {
+        id: messages.length + 1,
+        content: 'invalid access token',
+        author: 'Ai'};
+  setMessages([...messages,newMessage,newReply]);
+    }
+
+    else{
       const newReply: Message = {
         id: messages.length + 1,
         content: 'An error occured, try again later',
@@ -74,6 +84,7 @@ const display = async()=>{
         author: 'Ai'};
   setMessages([...messages,newMessage,newReply]);
     }
+  }
   
 setMessage('')
 }
