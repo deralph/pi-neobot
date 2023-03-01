@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { MyPaymentMetadata, User } from "../../App";
+import { ColorModes } from "../../App";
 
 interface Message {
   id: number;
@@ -12,6 +13,7 @@ interface Message {
 interface props {
   signOut: () => void;
   darkMode: () => void;
+  darkModeToggele:ColorModes
   user: User | null;
   subscribe: (
     memo: string,
@@ -20,7 +22,7 @@ interface props {
   ) => void;
 }
 
-const ChatPage: React.FC<props> = ({ signOut, user, subscribe, darkMode }) => {
+const ChatPage: React.FC<props> = ({ signOut, user, subscribe, darkMode, darkModeToggele }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
   const [submessage, setSubMessage] = useState<string>("");
@@ -96,7 +98,7 @@ const ChatPage: React.FC<props> = ({ signOut, user, subscribe, darkMode }) => {
 
   const sub = async () => {
     try {
-      await subscribe("subscription for pi-neobot", 5, {
+      await subscribe("subscription for Neobot premium", 5, {
         price: 5,
         user: user!,
       });
@@ -113,7 +115,7 @@ const ChatPage: React.FC<props> = ({ signOut, user, subscribe, darkMode }) => {
       <div
         className={`${
           mobileMenuToggle ? "left-[0px]" : "left-[-500px]"
-        } md:left-0 duration-300 bg-dark-green h-full text-white md:block px-3 py-3 fixed w-64 md:w-[34%] lg:w-1/5`}
+        } md:left-0 duration-300 bg-dark-green h-full text-white md:block px-3 py-3 fixed w-[260px] md:w-[34%] lg:w-1/5`}
       >
         <div className="flex flex-col justify-between h-[90%]">
           <div className="flex justify-center">History</div>
@@ -125,12 +127,11 @@ const ChatPage: React.FC<props> = ({ signOut, user, subscribe, darkMode }) => {
                 className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] cursor-pointer  rounded p-2.5 duration-300"
                 onClick={() => darkMode()}
               >
-                <span className="material-symbols-outlined">{`${
-                  localStorage.theme === "ligth" ? "dark_mode" : "light_mode"
-                }`}</span>
-                <p className="text-white text-xl">{`${
-                  localStorage.theme === "ligth" ? "Dark mode" : "Light mode"
-                }`}</p>
+                <span className="material-symbols-outlined duration-300">
+                  {`${darkModeToggele === "light" ? "dark_mode" : "light_mode"}`}
+                  </span>
+                <p className="text-white text-xl duration-300">
+                  {`${darkModeToggele === "light" ? "Dark mode" : "Light mode"}`}</p>
               </div>
 
               <Link to="/login" onClick={() => signOut()}>

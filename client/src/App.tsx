@@ -65,11 +65,11 @@ export interface MyPaymentMetadata {
   user: User;
 }
 
-type ColorModes = "light" | "dark" | "os";
+export type ColorModes = string;
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [darkModeToggele, setDarkModeToggele] = useState<ColorModes>("light");
+  const [darkModeToggele, setDarkModeToggele] = useState<ColorModes>('light');
 
   const signIn = async () => {
     const scopes = ["username", "payments"];
@@ -118,7 +118,7 @@ function App() {
   const onReadyForServerApproval = (paymentId: string) => {
     console.log("onReadyForServerApproval", paymentId);
     axiosClient.post("/payments/approve", { paymentId }, config);
-  };
+  }; 
 
   const onReadyForServerCompletion = (paymentId: string, txid: string) => {
     console.log("onReadyForServerCompletion", paymentId, txid);
@@ -141,22 +141,33 @@ function App() {
   //function for setting dark mode
   // On page load or when changing themes, best to add inline in `head` to avoid FOUC
   const darkMode = () => {
-    console.log(localStorage.theme);
-    // Whenever the user explicitly chooses light mode
-    if (localStorage.theme === "dark") {
-      localStorage.theme = "light";
-    }
 
-    // Whenever the user explicitly chooses dark mode
-    if (localStorage.theme === "light") {
-      localStorage.theme = "dark";
-    }
+    // if set via local storage previously
+    if (localStorage.getItem('color-theme')) {
+      if (localStorage.getItem('color-theme') === 'light') {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('color-theme', 'dark');
+ setDarkModeToggele('dark')  
+      } else {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('color-theme', 'light');
+ setDarkModeToggele('light')
+      }
 
-    // // Whenever the user explicitly chooses to respect the OS preference
-    // if (localStorage.theme === ''){
-    // // localStorage.removeItem('theme')
-    // }
-  };
+  // if NOT set via local storage previously
+  } else {
+      if (document.documentElement.classList.contains('dark')) {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('color-theme', 'light');
+          setDarkModeToggele('light')
+      } else {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('color-theme', 'dark');
+          setDarkModeToggele('dark')
+      }
+    }
+  
+};
 
   return (
     <div className="App">
@@ -172,6 +183,7 @@ function App() {
               user={user}
               subscribe={subscribe}
               darkMode={darkMode}
+              darkModeToggele={darkModeToggele}
             />
           }
         />
