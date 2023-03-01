@@ -6,7 +6,7 @@
 
 ## local preview steps for frontend
 ### 1. Install dependencies:
-You will need a working NodeJS installation,
+You will need NodeJS installed, go to node website to install that to your computer
 #### Using node 
 Run `npm install` or `npm i`
 #### Using yarn
@@ -22,7 +22,7 @@ You will also see any lint errors in the console.
 
 
 ### `npm run build`
-This will bu
+This will build the app ready for deployment any real hosting servers like c panel, just copy and paste the build folder and youre good
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
