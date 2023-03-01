@@ -153,7 +153,7 @@ const sub =async () => {
 
 <header className="flex items-center justify-between">
  {/* welcome message */} 
-<div className="dark:text-white bg-">Welcome, {user?.username}</div>
+<div className="dark:text-white text-dark-green">Welcome, {user?.username}</div>
     {/* hamburger menu for mobile */}
     <div onClick={()=>setMobileMenuToggle(!mobileMenuToggle)} className="flex gap-1 items-end flex-col md:hidden">
       <div className="h-1 w-6 bg-black dark:bg-white"></div>
