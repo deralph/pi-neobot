@@ -1,6 +1,8 @@
 # NeoBot 
+
 [Our official Website](https://neobot.online)
-`This a chat bot built on the Pi network`.
+
+### `This a chat bot built on the Pi network`.
 
 It is essentially a submission for the Pi hackaton 2023 
 
@@ -12,7 +14,7 @@ It is essentially a submission for the Pi hackaton 2023
 
 
 
-##Features
+## Features
 
 ### 1. Login with Pi account
 ### 2. Chat with Ai on trial
