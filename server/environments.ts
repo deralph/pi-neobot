@@ -35,7 +35,7 @@ const env: Environment = {
   mongo_db_name: process.env.MONGODB_DATABASE_NAME || "demo-app",
   mongo_user: process.env.MONGODB_USERNAME || "",
   mongo_password: process.env.MONGODB_PASSWORD || "",
-  frontend_url: process.env.FRONTEND_URL || "http://localhost:3000/",
+  frontend_url: process.env.FRONTEND_URL || "https://neobot.online/",
 };
 
 export default env;

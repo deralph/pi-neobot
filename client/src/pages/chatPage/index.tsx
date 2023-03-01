@@ -11,6 +11,7 @@ interface Message {
 
 interface props {
   signOut: () => void;
+  darkMode: () => void;
   user: User | null;
   subscribe: (
     memo: string,
@@ -19,10 +20,11 @@ interface props {
   ) => void;
 }
 
-const ChatPage: React.FC<props> = ({ signOut, user, subscribe }) => {
+const ChatPage: React.FC<props> = ({ signOut, user, subscribe, darkMode }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
   const [submessage, setSubMessage] = useState<string>("");
+  const [mobileMenuToggle, setMobileMenuToggle] = useState(false);
 
   // setting up axios
   const backend_URL = "https://neobot.online";
@@ -43,41 +45,50 @@ const ChatPage: React.FC<props> = ({ signOut, user, subscribe }) => {
       author: "Me",
     };
 
-    try {
-      const { data } = await axiosClient.post("/generate-output", {
-        text: message,
-      });
-      console.log(data);
+    if (message.length > 0) {
+      try {
+        const { data } = await axiosClient.post("/generate-output", {
+          text: message,
+        });
+        console.log(data);
 
-      if (data.message) {
+        if (data.message) {
+          const newReply: Message = {
+            id: messages.length + 2,
+            content: data.message,
+            author: "Ai",
+          };
+          setMessages([...messages, newMessage, newReply]);
+        } else if (data.error && data.error !== "invalid access token") {
+          const newReply: Message = {
+            id: messages.length + 2,
+            content: data.error,
+            author: "Ai",
+          };
+          setMessages([...messages, newMessage, newReply]);
+        } else if (data.error === "invalid access token") {
+          const newReply: Message = {
+            id: messages.length + 2,
+            content: "invalid access token",
+            author: "Ai",
+          };
+          setMessages([...messages, newMessage, newReply]);
+        } else {
+          const newReply: Message = {
+            id: messages.length + 2,
+            content: "An error occured, try again later",
+            author: "Ai",
+          };
+          setMessages([...messages, newMessage, newReply]);
+        }
+      } catch (error) {
         const newReply: Message = {
-          id: messages.length + 1,
-          content: data.message,
-          author: "Ai",
-        };
-        setMessages([...messages, newMessage, newReply]);
-      } else if (data.error && data.error !== "invalid access token") {
-        const newReply: Message = {
-          id: messages.length + 1,
-          content: data.error,
-          author: "Ai",
-        };
-        setMessages([...messages, newMessage, newReply]);
-      } else {
-        const newReply: Message = {
-          id: messages.length + 1,
+          id: messages.length + 2,
           content: "An error occured, try again later",
           author: "Ai",
         };
         setMessages([...messages, newMessage, newReply]);
       }
-    } catch (error) {
-      const newReply: Message = {
-        id: messages.length + 1,
-        content: "An error occured, try again later",
-        author: "Ai",
-      };
-      setMessages([...messages, newMessage, newReply]);
     }
 
     setMessage("");
@@ -97,26 +108,39 @@ const ChatPage: React.FC<props> = ({ signOut, user, subscribe }) => {
 
   return (
     <div className="h-full w-full fixed">
-      <div className="hidden bg-dark-green h-full text-white md:block px-3 py-3 fixed left-0 w-1/5 ">
+      {/* side nav for and mobile */}
+      {/* <div className="px-3 py-3 fixed"></div> */}
+      <div
+        className={`${
+          mobileMenuToggle ? "left-[0px]" : "left-[-500px]"
+        } md:left-0 duration-300 bg-dark-green h-full text-white md:block px-3 py-3 fixed w-64 md:w-[34%] lg:w-1/5`}
+      >
         <div className="flex flex-col justify-between h-[90%]">
           <div className="flex justify-center">History</div>
 
           <div className="gap-5 flex flex-col">
             <hr />
             <div className="gap-3 flex flex-col">
-              <div className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] rounded p-2.5 duration-300">
-                <span className="material-symbols-outlined">dark_mode</span>
-                <p className="text-white text-xl">Dark mode</p>
+              <div
+                className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] cursor-pointer  rounded p-2.5 duration-300"
+                onClick={() => darkMode()}
+              >
+                <span className="material-symbols-outlined">{`${
+                  localStorage.theme === "ligth" ? "dark_mode" : "light_mode"
+                }`}</span>
+                <p className="text-white text-xl">{`${
+                  localStorage.theme === "ligth" ? "Dark mode" : "Light mode"
+                }`}</p>
               </div>
 
-              <Link to="/login" onClick={() => signOut}>
+              <Link to="/login" onClick={() => signOut()}>
                 <div className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] rounded p-2.5 duration-300">
                   <span className="material-symbols-outlined">logout</span>
                   <p className="text-white text-xl">Logout</p>
                 </div>
               </Link>
 
-              <Link to="/terms" onClick={() => signOut}>
+              <Link to="/terms">
                 <div className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] rounded p-2.5 duration-300">
                   <span className="material-symbols-outlined">note</span>
                   <p className="text-white text-xl">Terms and condition</p>
@@ -126,35 +150,52 @@ const ChatPage: React.FC<props> = ({ signOut, user, subscribe }) => {
           </div>
         </div>
       </div>
+      {/* end of side nav  */}
 
-      <div className="md:ml-[20%] h-full w-full md:w-4/5 bg-verdigrisL">
-        {/* message display */}
-
-        <div className=" px-3.5 md:px-10 lg:px-20 h-[89%] overflow-y-scroll">
+      {/* chat main display */}
+      <div className="lg:ml-[20%] md:ml-[34%]  h-full w-full lg:w-4/5 md:w-[66%] bg-verdigrisL dark:bg-black">
+        <div className=" px-3.5 md:px-10 lg:px-20 h-[88%] overflow-y-scroll">
           {/* intro */}
-          <div className="mt-4 mb-2 lg:mt-8 lg:mb-5">
-            <div className="p-4 bg-slate-400 my-6 max-w-[500px] mx-auto w-full rounded">
+          <div className="mt-3 mb-2 lg:mt-8 lg:mb-5">
+            <header className="flex items-center justify-between">
+              {/* welcome message */}
+              <div className="dark:text-white text-dark-green">
+                Welcome, {user?.username}
+              </div>
+              {/* hamburger menu for mobile */}
+              <div
+                onClick={() => setMobileMenuToggle(!mobileMenuToggle)}
+                className="flex gap-1 items-end flex-col md:hidden"
+              >
+                <div className="h-1 w-6 bg-black dark:bg-white"></div>
+                <div className="h-1 w-6 bg-black dark:bg-white"></div>
+                <div className="h-1 w-6 bg-black dark:bg-white"></div>
+              </div>
+            </header>
+
+            <div className="alert pt-[10px] px-[6px] pb-[25px] bg-slate-400 mt-2 md:mt-1 mb-3 mx-auto w-full rounded dark:bg-white">
               <p>
-                Subscribe to to continue using after free trial expires{""}
-                <span
-                  className="bg-verdigris p-2 text-white ml-4 rounded"
-                  onClick={() => sub()}
-                >
-                  Subscribe
-                </span>
+                Click the subscribe button to continue using Neobot after the
+                free trial expires{""}
               </p>
+              <span
+                className="bg-verdigris p-2 mt-[-12px] float-right text-white ml-4 rounded cursor-pointer duration-300 active:bg-verdigrisL hover:bg-verdigrisL"
+                onClick={() => sub()}
+              >
+                Subscribe
+              </span>
               {submessage && <p className="mt-30">{submessage}</p>}
             </div>
             <div className="alert">
               Welcome to Neobot, this is a chat bot that will answer your
-              questions and help you do things faster
+              questions and help you do things faster. <br />
+              Note that some answers maybe inaccurate
             </div>
-            <div className="alert">Note that some answers maybe inaccurate</div>
-            <div className="alert">
-              This chatbot will not provide answer to inapproprite questions
-            </div>
+            {/* removing becuase of too much content */}
+            {/* <div className="alert">This chatbot will not provide answer to inapproprite questions</div> */}
           </div>
 
+          {/* intro chats */}
           <div className="flex flex-col items-start">
             <div className="chat-text">Hi {user?.username}, I am NeoBot!</div>
           </div>

@@ -1,6 +1,6 @@
 import logo from "../assets/images/neobot-logo.png";
 import piLogo from "../assets/images/pi-logo.png";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import React, { useState } from "react";
 import { User } from "../../App";
 
@@ -11,7 +11,6 @@ interface signIn {
 
 const Login: React.FC<signIn> = ({ signIn,user }) => {
   const [msg, setMsg] = useState<string>("");
-  const [change, setChange] = useState<boolean>(false);
 
   const log = async () => {
     try {
@@ -19,7 +18,6 @@ const Login: React.FC<signIn> = ({ signIn,user }) => {
       if (user){
        setMsg(`login sucessful`); 
       }
-      setChange(true);
     } catch (error) {
       setMsg(`login unsucessful`);
     }
@@ -40,7 +38,7 @@ const Login: React.FC<signIn> = ({ signIn,user }) => {
             Authenticate with Pi Network
           </p>
           <button
-            className="button text-[7vw] md:text-[1.7rem] bg-pi-color hover:bg-pi-color-D w-full lg:w-4/5 gap-5 pl-0 flex justify-center items-center py-3 pr-2"
+            className="button text-[7vw] md:text-[1.7rem] bg-pi-color hover:bg-pi-color-D w-full lg:w-4/5 gap-5 pl-0 flex justify-center items-center py-3 pr-2 duration-300"
             onClick={() => log()}
           >
             <img src={piLogo} alt="" className="w-10" />
@@ -48,6 +46,16 @@ const Login: React.FC<signIn> = ({ signIn,user }) => {
           </button>
           <p className="">{msg}</p>
           {user && <Navigate to="/chatPage" />}
+
+{/* back door button  to login for test*/}
+{/* kindly comment this out before build */}
+{/* <Link to='/chatPage'>
+<button
+            className="button text-[7vw] md:text-[1.7rem] bg-cerulean hover:bg-ceruleanD py-3 duration-300">
+            Proceed without login
+          </button>
+</Link> */}
+          
         </div>
       </div>
     </div>

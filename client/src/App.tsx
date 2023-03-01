@@ -6,8 +6,6 @@ import Welcome from "./pages/welcome";
 import ChatPage from "./pages/chatPage";
 import TandC from "./pages/TandC";
 
-type MypaymentMetaData = {};
-
 type AuthResult = {
   accessToken: string;
   user: {
@@ -67,8 +65,11 @@ export interface MyPaymentMetadata {
   user: User;
 }
 
+type ColorModes = "light" | "dark" | "os";
+
 function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [darkModeToggele, setDarkModeToggele] = useState<ColorModes>("light");
 
   const signIn = async () => {
     const scopes = ["username", "payments"];
@@ -137,6 +138,26 @@ function App() {
     }
   };
 
+  //function for setting dark mode
+  // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+  const darkMode = () => {
+    console.log(localStorage.theme);
+    // Whenever the user explicitly chooses light mode
+    if (localStorage.theme === "dark") {
+      localStorage.theme = "light";
+    }
+
+    // Whenever the user explicitly chooses dark mode
+    if (localStorage.theme === "light") {
+      localStorage.theme = "dark";
+    }
+
+    // // Whenever the user explicitly chooses to respect the OS preference
+    // if (localStorage.theme === ''){
+    // // localStorage.removeItem('theme')
+    // }
+  };
+
   return (
     <div className="App">
       <Routes>
@@ -146,7 +167,12 @@ function App() {
         <Route
           path="/chatpage"
           element={
-            <ChatPage signOut={signOut} user={user} subscribe={subscribe} />
+            <ChatPage
+              signOut={signOut}
+              user={user}
+              subscribe={subscribe}
+              darkMode={darkMode}
+            />
           }
         />
       </Routes>
