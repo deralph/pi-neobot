@@ -1,17 +1,8 @@
-# Neobot Full stack Application
+# Neobot Backend server
 
 [Our Official Website](https://neobot.online/).
 
-`Frontend` All frontend files are in the client folder.
-
-## local preview steps for frontend
-### 1. Install dependencies:
-You will need a working NodeJS installation, use 
-
-Install dependencies by running `yarn install`.
-
-
-### 2. Set up environment variables
+### 1. Set up environment variables
 
 The demo app's backend use several environment variables, from which most have default values. In order to specify
 these, create `.env` file in the root backend directory.
