@@ -60,10 +60,7 @@ const config = {
     "Access-Control-Allow-Origin": "*",
   },
 };
-export interface MyPaymentMetadata {
-  price: number;
-  user: User;
-}
+export interface MyPaymentMetadata {}
 
 export type ColorModes = string;
 
@@ -139,9 +136,7 @@ function App() {
   };
 
   //function for setting dark mode
-  // On page load or when changing themes, best to add inline in `head` to avoid FOUC
   const darkMode = () => {
-
     // if set via local storage previously
     if (localStorage.getItem('color-theme')) {
       if (localStorage.getItem('color-theme') === 'light') {
