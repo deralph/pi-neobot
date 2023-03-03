@@ -12,7 +12,7 @@ const answer = async (req: Request, res: Response) => {
   const openai = new OpenAIApi(configuration);
 
   try {
-    const User_ = user.findById(req.session.username);
+    const User_ = user.findById(req.body.username);
     if (!User_) {
       res.status(401).json({
         error: " no user found kindly login before use",
@@ -38,7 +38,7 @@ const answer = async (req: Request, res: Response) => {
         error: "unable to generate response at this time \n Please try again",
       });
     }
-    await User_.updateRequest(User_.username, User_.requestNo + 1);
+    // await User_.updateRequest(User_.username, User_.requestNo + 1);
 
     return res.status(200).json({ message: completion.data.choices[0].text });
   } catch (error: any) {
