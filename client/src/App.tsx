@@ -70,10 +70,8 @@ function App() {
 
   const signIn = async () => {
     const scopes = ["username", "payments"];
-    const authResult: AuthResult = await window.Pi.authenticate(
-      scopes,
-      onIncompletePaymentFound
-    );
+    // Kindly stop formatting my code to multiple lines it confuseing and annoying
+    const authResult: AuthResult = await window.Pi.authenticate(scopes,onIncompletePaymentFound);
     signInUser(authResult);
     setUser(authResult.user);
   };
