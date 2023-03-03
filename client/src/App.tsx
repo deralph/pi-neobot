@@ -60,7 +60,14 @@ const config = {
     "Access-Control-Allow-Origin": "*",
   },
 };
-export interface MyPaymentMetadata {}
+export interface MyPaymentMetadata {};
+
+type PaymentCallbacks = {
+  onReadyForServerApproval: (paymentId: string) => void,
+  onReadyForServerCompletion: (paymentId: string, txid: string) => void,
+  onCancel: (paymentId: string) => void,
+  onError: (error: Error, payment?: PaymentDTO) => void,
+};
 
 export type ColorModes = string;
 
@@ -95,7 +102,7 @@ function App() {
     paymentMetadata: MyPaymentMetadata
   ) => {
     const paymentData = { amount, memo, metadata: paymentMetadata };
-    const callbacks = {
+    const callbacks:PaymentCallbacks = {
       onReadyForServerApproval,
       onReadyForServerCompletion,
       onCancel,
