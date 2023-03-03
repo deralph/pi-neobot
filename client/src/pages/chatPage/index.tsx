@@ -60,11 +60,9 @@ const ChatPage: React.FC<props> = ({
 
     if (message.length > 0) {
       try {
-        const { data } = await axiosClient.post("/generate-output", {
-          text: message,
-        });
+        const { data } = await axiosClient.post("/generate-output", { text: message,});
         console.log(data);
-
+        
         if (data.message) {
           const newReply: Message = {
             id: messages.length + 2,
