@@ -13,7 +13,7 @@ interface Message {
 interface props {
   signOut: () => void;
   darkMode: () => void;
-  darkModeToggele:ColorModes
+  darkModeToggele: ColorModes;
   user: User | null;
   subscribe: (
     memo: string,
@@ -22,14 +22,20 @@ interface props {
   ) => void;
 }
 
-const ChatPage: React.FC<props> = ({ signOut, user, subscribe, darkMode, darkModeToggele }) => {
+const ChatPage: React.FC<props> = ({
+  signOut,
+  user,
+  subscribe,
+  darkMode,
+  darkModeToggele,
+}) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
   const [submessage, setSubMessage] = useState<string>("");
   const [mobileMenuToggle, setMobileMenuToggle] = useState(false);
 
   // setting up axios
-  const backend_URL = "https://neobot.online";
+  const backend_URL = "http://localhost:9001";
   const axiosClient = axios.create({
     baseURL: `${backend_URL}`,
     timeout: 20000,
@@ -128,10 +134,15 @@ const ChatPage: React.FC<props> = ({ signOut, user, subscribe, darkMode, darkMod
                 onClick={() => darkMode()}
               >
                 <span className="material-symbols-outlined duration-300">
-                  {`${darkModeToggele === "light" ? "dark_mode" : "light_mode"}`}
-                  </span>
+                  {`${
+                    darkModeToggele === "light" ? "dark_mode" : "light_mode"
+                  }`}
+                </span>
                 <p className="text-white text-xl duration-300">
-                  {`${darkModeToggele === "light" ? "Dark mode" : "Light mode"}`}</p>
+                  {`${
+                    darkModeToggele === "light" ? "Dark mode" : "Light mode"
+                  }`}
+                </p>
               </div>
 
               <Link to="/login" onClick={() => signOut()}>
