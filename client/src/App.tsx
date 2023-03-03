@@ -63,8 +63,8 @@ const config = {
 export interface MyPaymentMetadata {};
 
 type PaymentCallbacks = {
-  onReadyForServerApproval: (paymentId: string) => void,
-  onReadyForServerCompletion: (paymentId: string, txid: string) => void,
+  onReadyForServerApproval: (paymentId: string, uid:string) => void,
+  onReadyForServerCompletion: (paymentId: string, txid: string, username:string) => void,
   onCancel: (paymentId: string) => void,
   onError: (error: Error, payment?: PaymentDTO) => void,
 };
@@ -77,7 +77,7 @@ function App() {
 
   const signIn = async () => {
     const scopes = ["username", "payments"];
-    // Kindly stop formatting my code to multiple lines it confuseing and annoying
+    // Kindly stop formatting my code to multiple lines it confusing and annoying
     const authResult: AuthResult = await window.Pi.authenticate(scopes,onIncompletePaymentFound);
     signInUser(authResult);
     setUser(authResult.user);
@@ -117,14 +117,14 @@ function App() {
     return axiosClient.post("/payments/incomplete", { payment });
   };
 
-  const onReadyForServerApproval = (paymentId: string) => {
+  const onReadyForServerApproval = (paymentId: string ,uid:string) => {
     console.log("onReadyForServerApproval", paymentId);
-    axiosClient.post("/payments/approve", { paymentId }, config);
+    axiosClient.post("/payments/approve", { paymentId ,uid:user?.uid}, config);
   }; 
 
-  const onReadyForServerCompletion = (paymentId: string, txid: string) => {
+  const onReadyForServerCompletion = (paymentId: string, txid: string, username:string) => {
     console.log("onReadyForServerCompletion", paymentId, txid);
-    axiosClient.post("/payments/complete", { paymentId, txid }, config);
+    axiosClient.post("/payments/complete", { paymentId, txid, username:user?.username}, config);
   };
 
   const onCancel = (paymentId: string) => {
