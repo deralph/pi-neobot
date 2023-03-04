@@ -35,7 +35,12 @@ const ChatPage: React.FC<props> = ({
   const [mobileMenuToggle, setMobileMenuToggle] = useState(false);
 
   // setting up axios
-  const backend_URL = "http://localhost:9001";
+  
+  // host for local testing
+  // const backend_URL = "http://localhost:9001";
+
+  // host for live testing
+  const backend_URL = "https://neobot.online";
   const axiosClient = axios.create({
     baseURL: `${backend_URL}`,
     timeout: 20000,
@@ -55,11 +60,9 @@ const ChatPage: React.FC<props> = ({
 
     if (message.length > 0) {
       try {
-        const { data } = await axiosClient.post("/generate-output", {
-          text: message,
-        });
+        const { data } = await axiosClient.post("/generate-output", { text: message, username: user?.username});
         console.log(data);
-
+        
         if (data.message) {
           const newReply: Message = {
             id: messages.length + 2,
@@ -104,10 +107,7 @@ const ChatPage: React.FC<props> = ({
 
   const sub = async () => {
     try {
-      await subscribe("subscription for Neobot premium", 5, {
-        price: 5,
-        user: user!,
-      });
+      await subscribe("subscription for Neobot premium", 5, {productId:'neobot premium'});
       setSubMessage("subscription successful \n Enjoy your features!");
     } catch (error) {
       setSubMessage("Unable to subscribe \n Try again later");

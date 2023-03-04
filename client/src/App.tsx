@@ -49,21 +49,17 @@ interface WindowWithEnv extends Window {
 const _window: WindowWithEnv = window;
 const backendURL = _window.__ENV && _window.__ENV.backendURL;
 
-const axiosClient = axios.create({
-  baseURL: `${backendURL}`,
-  timeout: 20000,
-  withCredentials: true,
-});
-const config = {
-  headers: {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-  },
+const axiosClient = axios.create({ baseURL: `${backendURL}`, timeout: 20000, withCredentials: true});
+const config = {headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'}};
+
+export interface MyPaymentMetadata {};
+
+type PaymentCallbacks = {
+  onReadyForServerApproval: (paymentId: string, uid:string) => void,
+  onReadyForServerCompletion: (paymentId: string, txid: string, username:string) => void,
+  onCancel: (paymentId: string) => void,
+  onError: (error: Error, payment?: PaymentDTO) => void,
 };
-export interface MyPaymentMetadata {
-  price: number;
-  user: User;
-}
 
 export type ColorModes = string;
 
@@ -73,10 +69,8 @@ function App() {
 
   const signIn = async () => {
     const scopes = ["username", "payments"];
-    const authResult: AuthResult = await window.Pi.authenticate(
-      scopes,
-      onIncompletePaymentFound
-    );
+    // Kindly stop formatting my code to multiple lines it confusing and annoying
+    const authResult: AuthResult = await window.Pi.authenticate(scopes,onIncompletePaymentFound);
     signInUser(authResult);
     setUser(authResult.user);
   };
@@ -100,7 +94,7 @@ function App() {
     paymentMetadata: MyPaymentMetadata
   ) => {
     const paymentData = { amount, memo, metadata: paymentMetadata };
-    const callbacks = {
+    const callbacks:PaymentCallbacks = {
       onReadyForServerApproval,
       onReadyForServerCompletion,
       onCancel,
@@ -115,14 +109,14 @@ function App() {
     return axiosClient.post("/payments/incomplete", { payment });
   };
 
-  const onReadyForServerApproval = (paymentId: string) => {
+  const onReadyForServerApproval = (paymentId: string ,uid:string) => {
     console.log("onReadyForServerApproval", paymentId);
-    axiosClient.post("/payments/approve", { paymentId }, config);
+    axiosClient.post("/payments/approve", { paymentId ,uid:user?.uid}, config);
   }; 
 
-  const onReadyForServerCompletion = (paymentId: string, txid: string) => {
+  const onReadyForServerCompletion = (paymentId: string, txid: string, username:string) => {
     console.log("onReadyForServerCompletion", paymentId, txid);
-    axiosClient.post("/payments/complete", { paymentId, txid }, config);
+    axiosClient.post("/payments/complete", { paymentId, txid, username:user?.username}, config);
   };
 
   const onCancel = (paymentId: string) => {
@@ -139,9 +133,7 @@ function App() {
   };
 
   //function for setting dark mode
-  // On page load or when changing themes, best to add inline in `head` to avoid FOUC
   const darkMode = () => {
-
     // if set via local storage previously
     if (localStorage.getItem('color-theme')) {
       if (localStorage.getItem('color-theme') === 'light') {
