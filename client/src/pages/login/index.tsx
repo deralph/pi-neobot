@@ -7,21 +7,19 @@ import axios from "axios";
 
 interface signIn {
   signIn: () => void;
-  user:User | null;
+  user: User | null;
 }
 
-const Login: React.FC<signIn> = ({ signIn,user }) => {
+const Login: React.FC<signIn> = ({ signIn, user }) => {
   const [msg, setMsg] = useState<string>("");
 
-
-    // host for live testing
-    const backend_URL = "https://neobot.online";
-    const axiosClient = axios.create({
-      baseURL: `${backend_URL}`,
-      timeout: 20000,
-      withCredentials: true,
-    });
-
+  // host for live testing
+  const backend_URL = "https://neobot.online";
+  const axiosClient = axios.create({
+    baseURL: `${backend_URL}`,
+    timeout: 20000,
+    withCredentials: true,
+  });
 
   const log = async () => {
     try {
@@ -62,15 +60,14 @@ const Login: React.FC<signIn> = ({ signIn,user }) => {
           <p className="">{msg}</p>
           {msg && <Navigate to="/chatPage" />}
 
-{/* back door button  to login for test*/}
-{/* kindly comment this out before build */}
-<Link to='/chatPage'>
-<button
+          {/* back door button  to login for test*/}
+          {/* kindly comment this out before build */}
+          {/* <Link to='/chatPage'>   
+            <button
             className="button text-[7vw] md:text-[1.7rem] bg-cerulean hover:bg-ceruleanD py-3 duration-300">
             Proceed without login
           </button>
-</Link>
-          
+          </Link> */}
         </div>
       </div>
     </div>

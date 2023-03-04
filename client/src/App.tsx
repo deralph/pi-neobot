@@ -49,28 +49,44 @@ interface WindowWithEnv extends Window {
 const _window: WindowWithEnv = window;
 const backendURL = _window.__ENV && _window.__ENV.backendURL;
 
-const axiosClient = axios.create({ baseURL: `${backendURL}`, timeout: 20000, withCredentials: true});
-const config = {headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'}};
+const axiosClient = axios.create({
+  baseURL: `${backendURL}`,
+  timeout: 20000,
+  withCredentials: true,
+});
+const config = {
+  headers: {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  },
+};
 
-export interface MyPaymentMetadata {};
+export interface MyPaymentMetadata {}
 
 type PaymentCallbacks = {
-  onReadyForServerApproval: (paymentId: string, uid:string) => void,
-  onReadyForServerCompletion: (paymentId: string, txid: string, username:string) => void,
-  onCancel: (paymentId: string) => void,
-  onError: (error: Error, payment?: PaymentDTO) => void,
+  onReadyForServerApproval: (paymentId: string, uid: string) => void;
+  onReadyForServerCompletion: (
+    paymentId: string,
+    txid: string,
+    username: string
+  ) => void;
+  onCancel: (paymentId: string) => void;
+  onError: (error: Error, payment?: PaymentDTO) => void;
 };
 
 export type ColorModes = string;
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [darkModeToggele, setDarkModeToggele] = useState<ColorModes>('light');
+  const [darkModeToggele, setDarkModeToggele] = useState<ColorModes>("light");
 
   const signIn = async () => {
     const scopes = ["username", "payments"];
     // Kindly stop formatting my code to multiple lines it confusing and annoying
-    const authResult: AuthResult = await window.Pi.authenticate(scopes,onIncompletePaymentFound);
+    const authResult: AuthResult = await window.Pi.authenticate(
+      scopes,
+      onIncompletePaymentFound
+    );
     signInUser(authResult);
     setUser(authResult.user);
   };
@@ -94,7 +110,7 @@ function App() {
     paymentMetadata: MyPaymentMetadata
   ) => {
     const paymentData = { amount, memo, metadata: paymentMetadata };
-    const callbacks:PaymentCallbacks = {
+    const callbacks: PaymentCallbacks = {
       onReadyForServerApproval,
       onReadyForServerCompletion,
       onCancel,
@@ -109,14 +125,26 @@ function App() {
     return axiosClient.post("/payments/incomplete", { payment });
   };
 
-  const onReadyForServerApproval = (paymentId: string ,uid:string) => {
+  const onReadyForServerApproval = (paymentId: string, uid: string) => {
     console.log("onReadyForServerApproval", paymentId);
-    axiosClient.post("/payments/approve", { paymentId ,uid:user?.uid}, config);
-  }; 
+    axiosClient.post(
+      "/payments/approve",
+      { paymentId, uid: user?.uid },
+      config
+    );
+  };
 
-  const onReadyForServerCompletion = (paymentId: string, txid: string, username:string) => {
+  const onReadyForServerCompletion = (
+    paymentId: string,
+    txid: string,
+    username: string
+  ) => {
     console.log("onReadyForServerCompletion", paymentId, txid);
-    axiosClient.post("/payments/complete", { paymentId, txid, username:user?.username}, config);
+    axiosClient.post(
+      "/payments/complete",
+      { paymentId, txid, username: user?.username },
+      config
+    );
   };
 
   const onCancel = (paymentId: string) => {
@@ -135,50 +163,56 @@ function App() {
   //function for setting dark mode
   const darkMode = () => {
     // if set via local storage previously
-    if (localStorage.getItem('color-theme')) {
-      if (localStorage.getItem('color-theme') === 'light') {
-          document.documentElement.classList.add('dark');
-          localStorage.setItem('color-theme', 'dark');
- setDarkModeToggele('dark')  
+    if (localStorage.getItem("color-theme")) {
+      if (localStorage.getItem("color-theme") === "light") {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+        setDarkModeToggele("dark");
       } else {
-          document.documentElement.classList.remove('dark');
-          localStorage.setItem('color-theme', 'light');
- setDarkModeToggele('light')
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+        setDarkModeToggele("light");
       }
 
-  // if NOT set via local storage previously
-  } else {
-      if (document.documentElement.classList.contains('dark')) {
-          document.documentElement.classList.remove('dark');
-          localStorage.setItem('color-theme', 'light');
-          setDarkModeToggele('light')
+      // if NOT set via local storage previously
+    } else {
+      if (document.documentElement.classList.contains("dark")) {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-theme", "light");
+        setDarkModeToggele("light");
       } else {
-          document.documentElement.classList.add('dark');
-          localStorage.setItem('color-theme', 'dark');
-          setDarkModeToggele('dark')
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-theme", "dark");
+        setDarkModeToggele("dark");
       }
     }
-  
-};
+  };
 
   return (
     <div className="App">
       <Routes>
         <Route path="/" element={<Welcome />} />
-        <Route path="/login" element={<Login signIn={signIn} user={user} />} />
+        {user && (
+          <Route
+            path="/login"
+            element={<Login signIn={signIn} user={user} />}
+          />
+        )}{" "}
         <Route path="/terms" element={<TandC />} />
-        <Route
-          path="/chatpage"
-          element={
-            <ChatPage
-              signOut={signOut}
-              user={user}
-              subscribe={subscribe}
-              darkMode={darkMode}
-              darkModeToggele={darkModeToggele}
-            />
-          }
-        />
+        {user && (
+          <Route
+            path="/chatpage"
+            element={
+              <ChatPage
+                signOut={signOut}
+                user={user}
+                subscribe={subscribe}
+                darkMode={darkMode}
+                darkModeToggele={darkModeToggele}
+              />
+            }
+          />
+        )}
       </Routes>
     </div>
   );
