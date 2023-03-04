@@ -3,6 +3,7 @@ import piLogo from "../assets/images/pi-logo.png";
 import { Link, Navigate } from "react-router-dom";
 import React, { useState } from "react";
 import { User } from "../../App";
+import axios from "axios";
 
 interface signIn {
   signIn: () => void;
@@ -12,11 +13,25 @@ interface signIn {
 const Login: React.FC<signIn> = ({ signIn,user }) => {
   const [msg, setMsg] = useState<string>("");
 
+
+    // host for live testing
+    const backend_URL = "https://neobot.online";
+    const axiosClient = axios.create({
+      baseURL: `${backend_URL}`,
+      timeout: 20000,
+      withCredentials: true,
+    });
+
+
   const log = async () => {
     try {
-      await signIn();
+       signIn();
+    
       if (user){
-       setMsg(`login sucessful`); 
+         const { data} = await axiosClient.post("/check-user", { username: user?.username});
+         if(data){
+             setMsg(data.user.username); 
+         }
       }
     } catch (error) {
       setMsg(`login unsucessful`);
@@ -45,7 +60,7 @@ const Login: React.FC<signIn> = ({ signIn,user }) => {
             Login with Pi
           </button>
           <p className="">{msg}</p>
-          {user && <Navigate to="/chatPage" />}
+          {msg && <Navigate to="/chatPage" />}
 
 {/* back door button  to login for test*/}
 {/* kindly comment this out before build */}
