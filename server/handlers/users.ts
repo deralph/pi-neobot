@@ -29,7 +29,14 @@ export default function mountUserEndpoints(router: Router) {
       expiresIn: "",
       requestNo: 0,
     };
+    const User = await user.findById(auth.user.username);
+    if (!User) {
+      const User_ = await user.createUser(userDetails);
 
+      if (!User_) {
+        res.status(500).json({ error: "unable to create user" });
+      }
+    }
     if (currentUser) {
       await userCollection.updateOne(
         {
@@ -42,11 +49,6 @@ export default function mountUserEndpoints(router: Router) {
         }
       );
     } else {
-      const User_ = await user.createUser(userDetails);
-      if (!User_) {
-        res.status(500).json({ error: "unable to create user" });
-      }
-
       const insertResult = await userCollection.insertOne({
         username: auth.user.username,
         uid: auth.user.uid,
