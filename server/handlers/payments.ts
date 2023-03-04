@@ -2,7 +2,7 @@ import axios from "axios";
 import { Router } from "express";
 import platformAPIClient from "../services/platformAPIClient";
 import "../types/session";
-import user from "../schema/user";
+// import user from "../schema/user";
 
 const config = { headers: { Authorization: `Key ${process.env.PI_API_KEY}` } };
 
@@ -123,12 +123,12 @@ export default function mountPaymentsEndpoints(router: Router) {
         },
         config
       );
-      const User = await user.subscribeUser(req.body.username);
-      if (!User) {
-        res.status(500).json({
-          message: `user needs to be signed in`,
-        });
-      }
+      // const User = await user.subscribeUser(req.body.username);
+      // if (!User) {
+      //   res.status(500).json({
+      //     message: `user needs to be signed in`,
+      //   });
+      // }
     } catch (error) {
       console.log(error);
       res.status(500).json({

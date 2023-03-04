@@ -19,12 +19,12 @@ import "./types/session";
 import answer from "./chatGpt/chat";
 import connectDB from "./connectDB";
 import errorMiddleware from "./handlers/errorMIddleware";
-// import {
-//   createUser,
-//   findUser,
-//   updateRequest,
-//   subscribeUser,
-// } from "./handlers/testdb";
+import {
+  createUser,
+  findUser,
+  updateRequest,
+  subscribeUser,
+} from "./handlers/testdb";
 
 const app: express.Application = express();
 
@@ -88,10 +88,10 @@ mountUserEndpoints(userRouter);
 app.use("/user", userRouter);
 
 // testingdb
-// app.use("/check-user", createUser);
+app.use("/check-user", createUser);
 // app.use("/find-user", findUser);
 // app.use("/update-user", updateRequest);
-// app.use("/subscribe-user", subscribeUser);
+app.use("/subscribe-user", subscribeUser);
 
 app.post("/generate-output", answer);
 

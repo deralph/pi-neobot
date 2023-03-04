@@ -23,20 +23,6 @@ export default function mountUserEndpoints(router: Router) {
 
     let currentUser = await userCollection.findOne({ uid: auth.user.uid });
 
-    const userDetails: User = {
-      username: auth.user.username,
-      subscribedIn: "",
-      expiresIn: "",
-      requestNo: 0,
-    };
-    const User = await user.findById(auth.user.username);
-    if (!User) {
-      const User_ = await user.createUser(userDetails);
-
-      if (!User_) {
-        res.status(500).json({ error: "unable to create user" });
-      }
-    }
     if (currentUser) {
       await userCollection.updateOne(
         {
@@ -59,8 +45,8 @@ export default function mountUserEndpoints(router: Router) {
       currentUser = await userCollection.findOne(insertResult.insertedId);
     }
 
-    // req.session.currentUser = currentUser;
-    // req.session.username = userDetails.username;
+    req.session.currentUser = currentUser;
+    req.session.username = auth.user.username;
 
     return res.status(200).json({ message: "User signed in" });
   });
