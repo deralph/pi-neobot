@@ -35,6 +35,8 @@ const Login: React.FC<signIn> = ({ signIn, user }) => {
       setMsg(`login unsucessful`);
     }
   };
+
+  
   return (
     <div className="text-center">
       <div className="hidden lg:flex justify-center items-center w-3/5  bg-off-white  left-0 h-full fixed">
