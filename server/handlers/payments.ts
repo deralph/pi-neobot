@@ -4,6 +4,8 @@ import platformAPIClient from "../services/platformAPIClient";
 import "../types/session";
 import user from "../schema/user";
 
+const config = { headers: { Authorization: `Key ${process.env.PI_API_KEY}` } };
+
 export default function mountPaymentsEndpoints(router: Router) {
   // handle the incomplete payment
   router.post("/incomplete", async (req, res) => {
@@ -45,9 +47,13 @@ export default function mountPaymentsEndpoints(router: Router) {
     );
 
     // let Pi Servers know that the payment is completed
-    await platformAPIClient.post(`/v2/payments/${paymentId}/complete`, {
-      txid,
-    });
+    await platformAPIClient.post(
+      `/v2/payments/${paymentId}/complete`,
+      {
+        txid,
+      },
+      config
+    );
     return res
       .status(200)
       .json({ message: `Handled the incomplete payment ${paymentId}` });
@@ -59,7 +65,8 @@ export default function mountPaymentsEndpoints(router: Router) {
 
     const paymentId: any = req.body.paymentId;
     const currentPayment = await platformAPIClient.get(
-      `/v2/payments/${paymentId}`
+      `/v2/payments/${paymentId}`,
+      config
     );
     const orderCollection = app.locals.orderCollection;
 
@@ -79,7 +86,11 @@ export default function mountPaymentsEndpoints(router: Router) {
     });
 
     // let Pi Servers know that you're ready
-    await platformAPIClient.post(`/v2/payments/${paymentId}/approve`);
+    await platformAPIClient.post(
+      `/v2/payments/${paymentId}/approve`,
+      {},
+      config
+    );
     return res
       .status(200)
       .json({ message: `Approved the payment ${paymentId}` });
@@ -105,10 +116,14 @@ export default function mountPaymentsEndpoints(router: Router) {
       );
 
       // let Pi server know that the payment is completed
-      await platformAPIClient.post(`/v2/payments/${paymentId}/complete`, {
-        txid,
-      });
-      const User = user.subscribeUser(req.body.username);
+      await platformAPIClient.post(
+        `/v2/payments/${paymentId}/complete`,
+        {
+          txid,
+        },
+        config
+      );
+      const User = await user.subscribeUser(req.body.username);
       if (!User) {
         res.status(500).json({
           message: `user needs to be signed in`,

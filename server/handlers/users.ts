@@ -27,7 +27,6 @@ export default function mountUserEndpoints(router: Router) {
       username: auth.user.username,
       subscribedIn: "",
       expiresIn: "",
-      roles: auth.user.roles,
       requestNo: 0,
     };
 
@@ -45,8 +44,7 @@ export default function mountUserEndpoints(router: Router) {
     } else {
       const User_ = await user.createUser(userDetails);
       if (!User_) {
-        console.log("an error ocurred in the registering of user");
-        throw new Error("an error ocurred in the registering of user");
+        res.status(500).json({ error: "unable to create user" });
       }
 
       const insertResult = await userCollection.insertOne({
@@ -59,8 +57,8 @@ export default function mountUserEndpoints(router: Router) {
       currentUser = await userCollection.findOne(insertResult.insertedId);
     }
 
-    req.session.currentUser = currentUser;
-    req.session.username = userDetails.username;
+    // req.session.currentUser = currentUser;
+    // req.session.username = userDetails.username;
 
     return res.status(200).json({ message: "User signed in" });
   });

@@ -12,12 +12,11 @@ const answer = async (req: Request, res: Response) => {
   const openai = new OpenAIApi(configuration);
 
   try {
-    const User_ = user.findById(req.body.username);
+    const User_ = await user.findById(req.body.username);
     if (!User_) {
       res.status(401).json({
-        error: " no user found kindly login before use",
+        error: " no user found kindly\n login before use",
       });
-      console.log("an error ocurred in the checking the user");
     }
     const date = new Date().toLocaleDateString();
     const checkDate = new Date(date) > new Date(User_.expiresIn);
@@ -38,8 +37,15 @@ const answer = async (req: Request, res: Response) => {
         error: "unable to generate response at this time \n Please try again",
       });
     }
-    // await User_.updateRequest(User_.username, User_.requestNo + 1);
-
+    const subscribed = await user.updateRequest(
+      User_.username,
+      User_.requestNo + 1
+    );
+    if (!subscribed) {
+      res.status(500).json({
+        error: "user request unuploaded",
+      });
+    }
     return res.status(200).json({ message: completion.data.choices[0].text });
   } catch (error: any) {
     if (error.response) {

@@ -13,10 +13,7 @@ const userSchema = new Schema<User>({
   expiresIn: {
     type: String,
   },
-  roles: {
-    type: Array,
-    // required: true,
-  },
+
   requestNo: {
     type: Number,
   },

@@ -19,20 +19,26 @@ import "./types/session";
 import answer from "./chatGpt/chat";
 import connectDB from "./connectDB";
 import errorMiddleware from "./handlers/errorMIddleware";
+// import {
+//   createUser,
+//   findUser,
+//   updateRequest,
+//   subscribeUser,
+// } from "./handlers/testdb";
 
 const app: express.Application = express();
 
 // // for hosting
-// if (process.env.NODE_ENV === "production") {
-//   app.use("/", express.static("../build"));
+if (process.env.NODE_ENV === "production") {
+  app.use("/", express.static("../build"));
 
-//   app.get("*", (req, res) => {
-//     res.sendFile(path.join(__dirname, "..", "build", "index.html"));
-//   });
-// }
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+  });
+}
 
 // for local
-app.use(express.static(path.resolve(__dirname, "../client/build")));
+// app.use(express.static(path.resolve(__dirname, "../client/build")));
 
 // Log requests to the console in a compact format:
 app.use(logger("dev"));
@@ -80,6 +86,12 @@ app.use("/payments", paymentsRouter);
 const userRouter = express.Router();
 mountUserEndpoints(userRouter);
 app.use("/user", userRouter);
+
+// testingdb
+// app.use("/check-user", createUser);
+// app.use("/find-user", findUser);
+// app.use("/update-user", updateRequest);
+// app.use("/subscribe-user", subscribeUser);
 
 app.post("/generate-output", answer);
 

@@ -2,7 +2,6 @@ export interface User {
   username: string;
   subscribedIn: string;
   expiresIn: string;
-  roles: Array<string> | any;
   requestNo: number;
 }
 
