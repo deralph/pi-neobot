@@ -25,9 +25,9 @@ const Login: React.FC<signIn> = ({ signIn,user }) => {
 
   const log = async () => {
     try {
-       signIn();
+      await  signIn();
     
-      if (user){
+     if (user){
          const { data} = await axiosClient.post("/check-user", { username: user?.username});
          if(data){
              setMsg(data.user.username); 
@@ -64,12 +64,12 @@ const Login: React.FC<signIn> = ({ signIn,user }) => {
 
 {/* back door button  to login for test*/}
 {/* kindly comment this out before build */}
-{/* <Link to='/chatPage'>
+<Link to='/chatPage'>
 <button
             className="button text-[7vw] md:text-[1.7rem] bg-cerulean hover:bg-ceruleanD py-3 duration-300">
             Proceed without login
           </button>
-</Link> */}
+</Link>
           
         </div>
       </div>

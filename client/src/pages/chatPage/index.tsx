@@ -121,12 +121,9 @@ const ChatPage: React.FC<props> = ({
   return (
     <div className="h-full w-full fixed">
       {/* side nav for and mobile */}
-      {/* <div className="px-3 py-3 fixed"></div> */}
-      <div
-        className={`${
-          mobileMenuToggle ? "left-[0px]" : "left-[-500px]"
-        } md:left-0 duration-300 bg-dark-green h-full text-white md:block px-3 py-3 fixed w-[260px] md:w-[34%] lg:w-1/5`}
-      >
+   {mobileMenuToggle &&  <div className="fixed top-0 bottom-0 left-0 w-full z-[999]">
+<div className="fixed top-0 bottom-0 left-0 w-full bg-[#0000006e] " onClick={()=> setMobileMenuToggle(!mobileMenuToggle)}></div>
+<div className='z-[9999] animate-slide md:left-0 duration-300 bg-dark-green h-full text-white md:block px-3 py-3 fixed w-[260px] md:w-[34%] lg:w-1/5'>
         <div className="flex flex-col justify-between h-[90%]">
           <div className="flex justify-center">History</div>
 
@@ -166,14 +163,15 @@ const ChatPage: React.FC<props> = ({
           </div>
         </div>
       </div>
+      </div>}
       {/* end of side nav  */}
 
       {/* chat main display */}
       <div className="lg:ml-[20%] md:ml-[34%]  h-full w-full lg:w-4/5 md:w-[66%] bg-verdigrisL dark:bg-black">
         <div className=" px-3.5 md:px-10 lg:px-20 h-[88%] overflow-y-scroll">
           {/* intro */}
-          <div className="mt-3 mb-2 lg:mt-8 lg:mb-5">
-            <header className="flex items-center justify-between">
+          <div className="mt-0 mb-2 lg:mt-8 lg:mb-5 fixed top-0 pt-4 px-0 mr-2 ml-[-8px] bg-verdigrisLM dark:bg-black ">
+            <header className="flex items-center justify-between pl-2">
               {/* welcome message */}
               <div className="dark:text-white text-dark-green">
                 Welcome, {user?.username}
@@ -211,6 +209,8 @@ const ChatPage: React.FC<props> = ({
             {/* <div className="alert">This chatbot will not provide answer to inapproprite questions</div> */}
           </div>
 
+
+<div className="mt-[210px]">
           {/* intro chats */}
           <div className="flex flex-col items-start">
             <div className="chat-text">Hi {user?.username}, I am NeoBot!</div>
@@ -242,6 +242,7 @@ const ChatPage: React.FC<props> = ({
               </div>
             </div>
           ))}
+        </div>
         </div>
 
         {/* message input */}
