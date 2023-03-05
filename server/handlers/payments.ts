@@ -13,7 +13,7 @@ const config = {
 export default function mountPaymentsEndpoints(router: Router) {
   // handle the incomplete payment
   router.post("/incomplete", async (req, res) => {
-    const payment = req.body.payment!;
+    const payment = req.body.payment;
     const paymentId = payment.identifier;
     const txid = payment.transaction && payment.transaction.txid;
     const txURL = payment.transaction && payment.transaction._link;
@@ -67,7 +67,11 @@ export default function mountPaymentsEndpoints(router: Router) {
     );
     console.log(currentPayment);
 
-    await InvoicesModel.create({ uid: req.body.uid, pi_payment_id: paymentId });
+    await InvoicesModel.create({
+      username: req.body.username,
+      uid: req.body.uid,
+      pi_payment_id: paymentId,
+    });
 
     // let Pi Servers know that you're ready
     const responseFromPi = await platformAPIClient.post(
@@ -93,6 +97,7 @@ export default function mountPaymentsEndpoints(router: Router) {
         `/v2/payments/${paymentId}`,
         config
       );
+      console.log(payment);
       const invoice = await InvoicesModel.findOneAndUpdate(
         { pi_payment_id: paymentId },
         { paid: true },

@@ -5,6 +5,7 @@ const schemaOptions = {
 };
 const schema = new Schema(
   {
+    username: { type: String, required: true },
     uid: { type: String, required: true },
     receiverId: { type: String, default: "" },
     shipTo: { type: Object, default: "" },
