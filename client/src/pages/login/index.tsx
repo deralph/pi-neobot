@@ -9,10 +9,11 @@ interface signIn {
   signIn: () => void;
   user: User | null;
 }
-export let notSubscribed = true
+export let notSubscribed = true;
 
 const Login: React.FC<signIn> = ({ signIn, user }) => {
   const [msg, setMsg] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   // host for live testing
   const backend_URL = "https://neobot.online";
@@ -23,24 +24,29 @@ const Login: React.FC<signIn> = ({ signIn, user }) => {
   });
 
   const log = async () => {
-  //getting todays date
-let todayDateString = new Date().toLocaleDateString();
-let todayDate = new Date(todayDateString)
-//getting user details
-  const { data } = await axiosClient.post("/check-user", {
-        username: user?.username,
-      });
-//confirminig user info
-      if (data) { 
-        // checking if subscribed
-        if(data.user.expireIn){
-          notSubscribed = todayDate < new Date(data.user.expiresIn) //returns false if they are subscribed
-          //pls do not format my code read it on one line!!
-        }
-       setMsg(data.user.username);
-    } 
-     
-    };
+    //getting todays date
+    let todayDateString = new Date().toLocaleDateString();
+    let todayDate = new Date(todayDateString);
+    //getting user details
+    const { data } = await axiosClient.post("/check-user", {
+      username: user?.username,
+    });
+    //confirminig user info
+    if (data) {
+      // checking for error
+      if (data.error) {
+        setError(data.error);
+      }
+      // checking if subscribed
+      if (data.User.expireIn !== (" " || "")) {
+        notSubscribed = todayDate < new Date(data.User.expiresIn); //returns false if they are subscribed
+        //pls do not format my code read it on one line!!
+      } else {
+        notSubscribed = true;
+      }
+      setMsg(data.User.username);
+    }
+  };
 
   return (
     <div className="text-center">
@@ -57,6 +63,9 @@ let todayDate = new Date(todayDateString)
           <p className="text-xl lg:text-2xl text-pi-color-D">
             Authenticate with Pi Network
           </p>
+          {error && (
+            <p className="text-xl lg:text-2xl text-pi-color-D">{error}</p>
+          )}
           <button
             className="button text-[7vw] md:text-[1.7rem] bg-pi-color hover:bg-pi-color-D w-full lg:w-4/5 gap-5 pl-0 flex justify-center items-center py-3 pr-2 duration-300"
             onClick={() => log()}
