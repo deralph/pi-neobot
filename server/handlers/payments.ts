@@ -7,7 +7,7 @@ import "../types/session";
 
 const config = {
   headers: {
-    'Authorization': `Key keftdljlayea9c12rjumna24ptsewomoo8mb1vonnzexpo8lcgkxjlxbrunyfmmk`,
+    'Authorization': `Key bddjbksqtnqcafxvcw3gxzisvtgdnmtv2mgqk0bj2jdlgwivrinan4wsou8vgx13`,
   },
 };
 
