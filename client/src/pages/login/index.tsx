@@ -35,6 +35,7 @@ const Login: React.FC<signIn> = ({ signIn, user }) => {
       setMsg(`login unsucessful`);
     }
   };
+
   return (
     <div className="text-center">
       <div className="hidden lg:flex justify-center items-center w-3/5  bg-off-white  left-0 h-full fixed">
@@ -62,12 +63,12 @@ const Login: React.FC<signIn> = ({ signIn, user }) => {
 
           {/* back door button  to login for test*/}
           {/* kindly comment this out before build */}
-          {/* <Link to='/chatPage'>
-<button
+          {/* <Link to='/chatPage'>   
+            <button
             className="button text-[7vw] md:text-[1.7rem] bg-cerulean hover:bg-ceruleanD py-3 duration-300">
             Proceed without login
           </button>
-</Link> */}
+          </Link> */}
         </div>
       </div>
     </div>
