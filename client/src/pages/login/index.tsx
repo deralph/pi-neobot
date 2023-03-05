@@ -14,6 +14,7 @@ export let notSubscribed = true;
 const Login: React.FC<signIn> = ({ signIn, user }) => {
   const [msg, setMsg] = useState<string>("");
   const [error, setError] = useState<string>("");
+  // const [error, setError] = useState<string>("");
 
   // host for live testing
   const backend_URL = "https://neobot.online";
@@ -39,10 +40,10 @@ const Login: React.FC<signIn> = ({ signIn, user }) => {
       }
       // checking if subscribed
       if (data.User.expireIn !== (" " || "")) {
-        notSubscribed = todayDate < new Date(data.User.expiresIn); //returns false if they are subscribed
+        if (todayDate > new Date(data.User.expiresIn)) {
+          notSubscribed = false;
+        } //returns false if they are subscribed
         //pls do not format my code read it on one line!!
-      } else {
-        notSubscribed = true;
       }
       setMsg(data.User.username);
     }
