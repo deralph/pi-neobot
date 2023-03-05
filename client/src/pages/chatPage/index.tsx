@@ -130,24 +130,18 @@ const ChatPage: React.FC<props> = ({
     console.log(payment);
   };
 
-  const onIncompletePaymentFound = (payment: PaymentDTO) => {
-    console.log("onIncompletePaymentFound", payment);
-    return axiosClient.post("/payments/incomplete", { payment });
-  };
-
-  const onReadyForServerApproval = (paymentId: string, uid: string) => {
+  const onReadyForServerApproval = (paymentId: string, ) => {
     console.log("onReadyForServerApproval", paymentId);
     axiosClient.post(
       "/payments/approve",
-      { paymentId, uid: user?.uid, username: user?.username },
+      { paymentId, username: user?.username , uid: user?.uid},
       config
     );
   };
 
   const onReadyForServerCompletion = (
     paymentId: string,
-    txid: string,
-    username: string
+    txid: string
   ) => {
     console.log("onReadyForServerCompletion", paymentId, txid);
     axiosClient.post(
@@ -172,9 +166,7 @@ const ChatPage: React.FC<props> = ({
 
   const sub = async () => {
     try {
-      await subscribe("subscription for Neobot premium", 5, {
-        productId: "neobot premium",
-      });
+      await subscribe("Subscription for one Month Neobot premium", 5, { productId: "neobot premium", });
       const { data } = await axiosClient.post("/subscribe-user", {
         username: user?.username,
       });
@@ -189,54 +181,49 @@ const ChatPage: React.FC<props> = ({
   return (
     <div className="h-full w-full fixed">
       {/* side nav for and mobile */}
-      {mobileMenuToggle && (
-        <div className="fixed top-0 bottom-0 left-0 w-full z-[999]">
-          <div
-            className="fixed top-0 bottom-0 left-0 w-full bg-[#0000006e] "
-            onClick={() => setMobileMenuToggle(!mobileMenuToggle)}
-          ></div>
-          <div className="z-[9999] animate-slide md:left-0 duration-300 bg-dark-green h-full text-white md:block px-3 py-3 fixed w-[260px] md:w-[34%] lg:w-1/5">
-            <div className="flex flex-col justify-between h-[90%]">
-              <div className="flex justify-center">History</div>
+   {mobileMenuToggle &&  <div className="fixed top-0 bottom-0 left-0 w-full z-[999]">
+<div className="fixed top-0 bottom-0 left-0 w-full bg-[#0000006e] " onClick={()=> setMobileMenuToggle(!mobileMenuToggle)}></div>
+<div className='z-[9999] animate-slide md:left-0 duration-300 bg-dark-green h-full text-white md:block px-3 py-3 fixed w-[260px] md:w-[34%] lg:w-1/5'>
+        <div className="flex flex-col justify-between h-[90%]">
+          <div className="flex justify-center">History</div>
 
-              <div className="gap-5 flex flex-col">
-                <hr />
-                <div className="gap-3 flex flex-col">
-                  <div
-                    className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] cursor-pointer  rounded p-2.5 duration-300"
-                    onClick={() => darkMode()}
-                  >
-                    <span className="material-symbols-outlined duration-300">
-                      {`${
-                        darkModeToggele === "light" ? "dark_mode" : "light_mode"
-                      }`}
-                    </span>
-                    <p className="text-white text-xl duration-300">
-                      {`${
-                        darkModeToggele === "light" ? "Dark mode" : "Light mode"
-                      }`}
-                    </p>
-                  </div>
-
-                  <Link to="/login" onClick={() => signOut()}>
-                    <div className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] rounded p-2.5 duration-300">
-                      <span className="material-symbols-outlined">logout</span>
-                      <p className="text-white text-xl">Logout</p>
-                    </div>
-                  </Link>
-
-                  <Link to="/terms">
-                    <div className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] rounded p-2.5 duration-300">
-                      <span className="material-symbols-outlined">note</span>
-                      <p className="text-white text-xl">Terms and condition</p>
-                    </div>
-                  </Link>
-                </div>
+          <div className="gap-5 flex flex-col">
+            <hr />
+            <div className="gap-3 flex flex-col">
+              <div
+                className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] cursor-pointer  rounded p-2.5 duration-300"
+                onClick={() => darkMode()}
+              >
+                <span className="material-symbols-outlined duration-300">
+                  {`${
+                    darkModeToggele === "light" ? "dark_mode" : "light_mode"
+                  }`}
+                </span>
+                <p className="text-white text-xl duration-300">
+                  {`${
+                    darkModeToggele === "light" ? "Dark mode" : "Light mode"
+                  }`}
+                </p>
               </div>
+
+              <Link to="/login" onClick={() => signOut()}>
+                <div className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] rounded p-2.5 duration-300">
+                  <span className="material-symbols-outlined">logout</span>
+                  <p className="text-white text-xl">Logout</p>
+                </div>
+              </Link>
+
+              <Link to="/terms">
+                <div className="flex flex-row items-end gap-2 hover:bg-[#efefef1f] rounded p-2.5 duration-300">
+                  <span className="material-symbols-outlined">note</span>
+                  <p className="text-white text-xl">Terms and condition</p>
+                </div>
+              </Link>
             </div>
           </div>
         </div>
-      )}
+      </div>
+      </div>}
       {/* end of side nav  */}
 
       {/* chat main display */}
@@ -282,39 +269,40 @@ const ChatPage: React.FC<props> = ({
             {/* <div className="alert">This chatbot will not provide answer to inapproprite questions</div> */}
           </div>
 
-          <div className="mt-[210px]">
-            {/* intro chats */}
-            <div className="flex flex-col items-start">
-              <div className="chat-text">Hi {user?.username}, I am NeoBot!</div>
-            </div>
-            <div className="flex flex-col items-start">
-              <div className="chat-text ">
-                I am an Artificially Intelligent chatbot on the Pi Network
-              </div>
-            </div>
-            <div className="flex flex-col items-start">
-              <div className="chat-text ">What can I help you with today?</div>
-            </div>
 
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex flex-col ${
-                  message.author === "Me" ? "items-end" : "items-start"
-                }`}
-              >
-                <div
-                  className={`chat-text  ${
-                    message.author === "Me"
-                      ? "bg-cerulean rounded-tl-xl rounded-br-none "
-                      : "bg-verdigris"
-                  } `}
-                >
-                  {message.content}
-                </div>
-              </div>
-            ))}
+<div className="mt-[210px]">
+          {/* intro chats */}
+          <div className="flex flex-col items-start">
+            <div className="chat-text">Hi {user?.username}, I am NeoBot!</div>
           </div>
+          <div className="flex flex-col items-start">
+            <div className="chat-text ">
+              I am an Artificially Intelligent chatbot on the Pi Network
+            </div>
+          </div>
+          <div className="flex flex-col items-start">
+            <div className="chat-text ">What can I help you with today?</div>
+          </div>
+
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex flex-col ${
+                message.author === "Me" ? "items-end" : "items-start"
+              }`}
+            >
+              <div
+                className={`chat-text  ${
+                  message.author === "Me"
+                    ? "bg-cerulean rounded-tl-xl rounded-br-none "
+                    : "bg-verdigris"
+                } `}
+              >
+                {message.content}
+              </div>
+            </div>
+          ))}
+        </div>
         </div>
 
         {/* message input */}
