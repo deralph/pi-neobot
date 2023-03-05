@@ -19,12 +19,7 @@ import "./types/session";
 import answer from "./chatGpt/chat";
 import connectDB from "./connectDB";
 import errorMiddleware from "./handlers/errorMIddleware";
-import {
-  createUser,
-  findUser,
-  updateRequest,
-  subscribeUser,
-} from "./handlers/testdb";
+import { createUser, subscribeUser } from "./handlers/testdb";
 import MongoStore from "connect-mongo";
 
 const app: express.Application = express();
@@ -95,10 +90,9 @@ app.use("/user", userRouter);
 
 // testingdb
 app.use("/check-user", createUser);
-// app.use("/find-user", findUser);
-// app.use("/update-user", updateRequest);
 app.use("/subscribe-user", subscribeUser);
 
+// generate answer endpoint
 app.post("/generate-output", answer);
 
 app.use(errorMiddleware);

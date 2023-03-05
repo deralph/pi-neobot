@@ -3,7 +3,6 @@ import { Router } from "express";
 import InvoicesModel from "../schema/data";
 import platformAPIClient from "../services/platformAPIClient";
 import "../types/session";
-// import user from "../schema/user";
 
 const config = {
   headers: {
@@ -19,20 +18,10 @@ export default function mountPaymentsEndpoints(router: Router) {
     const txid = payment.transaction && payment.transaction.txid;
     const txURL = payment.transaction && payment.transaction._link;
 
-    /* 
-      implement your logic here
-      e.g. verifying the payment, delivering the item to the user, etc...
-
-      below is a naive example
-    */
-
     // find the incomplete order
-    const app = req.app;
-    const orderCollection = app.locals.orderCollection;
-    // const order = await orderCollection.findOne({ pi_payment_id: paymentId });
     const order = await InvoicesModel.findOne({ pi_payment_id: paymentId });
 
-    // order doesn't exist
+    // // order doesn't exist
     if (!order) {
       return res.status(400).json({ message: "Order not found" });
     }
@@ -47,13 +36,13 @@ export default function mountPaymentsEndpoints(router: Router) {
     }
 
     // mark the order as paid
-    // await orderCollection.updateOne(
-    //   { pi_payment_id: paymentId },
-    //   { $set: { txid, paid: true } }
-    // );
-    await InvoicesModel.updateOne(
+
+    await InvoicesModel.findOneAndUpdate(
       { pi_payment_id: paymentId },
-      { $set: { txid, paid: true } }
+      { paid: true },
+      {
+        new: true,
+      }
     );
 
     // let Pi Servers know that the payment is completed
@@ -71,35 +60,14 @@ export default function mountPaymentsEndpoints(router: Router) {
 
   // approve the current payment
   router.post("/approve", async (req, res) => {
-    const app = req.app;
-
     const paymentId: any = req.body.paymentId;
     const currentPayment = await platformAPIClient.get(
       `/v2/payments/${paymentId}`,
       config
     );
     console.log(currentPayment);
-    // const orderCollection = app.locals.orderCollection;
 
-    /* 
-      implement your logic here 
-      e.g. creating an order record, reserve an item if the quantity is limited, etc...
-    */
-
-    // await orderCollection.insertOne({
-    //   pi_payment_id: paymentId,
-    //   product_id: currentPayment.data.metadata.productId,
-    //   user: req.body.uid,
-    //   txid: null,
-    //   paid: false,
-    //   cancelled: false,
-    //   created_at: new Date(),
-    // });
-
-    await InvoicesModel.updateOne(
-      { invoiceId: req.body.uid },
-      { $set: { pi_payment_id: paymentId } }
-    );
+    await InvoicesModel.create({ uid: req.body.uid, pi_payment_id: paymentId });
 
     // let Pi Servers know that you're ready
     const responseFromPi = await platformAPIClient.post(
@@ -107,6 +75,7 @@ export default function mountPaymentsEndpoints(router: Router) {
       {},
       config
     );
+    console.log(responseFromPi);
     return res
       .status(200)
       .json({ message: `Approved the payment ${paymentId}` });
@@ -118,28 +87,20 @@ export default function mountPaymentsEndpoints(router: Router) {
 
     const paymentId = req.body.paymentId;
     const txid = req.body.txid;
-    // const orderCollection = app.locals.orderCollection;
-
-    /* 
-      implement your logic here
-      e.g. verify the transaction, deliver the item to the user, etc...
-    */
 
     try {
-      // await orderCollection.updateOne(
-      //   { pi_payment_id: paymentId },
-      //   { $set: { txid: txid, paid: true } }
-      // );
       const payment = await platformAPIClient.get(
-        `/v2/payments/${paymentId!}`,
+        `/v2/payments/${paymentId}`,
         config
       );
-
       const invoice = await InvoicesModel.findOneAndUpdate(
         { pi_payment_id: paymentId },
-        { $set: { txid: txid, paid: true, tip: payment.data?.metadata?.tip } },
-        { new: true }
+        { paid: true },
+        {
+          new: true,
+        }
       );
+
       if (!invoice) {
         return res
           .status(404)
@@ -152,13 +113,7 @@ export default function mountPaymentsEndpoints(router: Router) {
         { txid },
         config
       );
-
-      // const User = await user.subscribeUser(req.body.username);
-      // if (!User) {
-      //   res.status(500).json({
-      //     message: `user needs to be signed in`,
-      //   });
-      // }
+      console.log(responseFromPi);
 
       return res
         .status(200)
@@ -173,23 +128,16 @@ export default function mountPaymentsEndpoints(router: Router) {
 
   // handle the cancelled payment
   router.post("/cancelled_payment", async (req, res) => {
-    const app = req.app;
-
     const paymentId = req.body.paymentId;
-    const orderCollection = app.locals.orderCollection;
 
     /*
       implement your logic here
-      e.g. mark the order record to cancelled, etc...
     */
 
-    // await orderCollection.updateOne(
-    //   { pi_payment_id: paymentId },
-    //   { $set: { cancelled: true } }
-    // );
-    await InvoicesModel.updateOne(
+    await InvoicesModel.findOneAndUpdate(
       { pi_payment_id: paymentId },
-      { $set: { cancelled: true } }
+      { cancelled: true },
+      { new: true }
     );
     return res
       .status(200)
