@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Router } from "express";
+import InvoicesModel from "../schema/data";
 import platformAPIClient from "../services/platformAPIClient";
 import "../types/session";
 // import user from "../schema/user";
@@ -28,7 +29,8 @@ export default function mountPaymentsEndpoints(router: Router) {
     // find the incomplete order
     const app = req.app;
     const orderCollection = app.locals.orderCollection;
-    const order = await orderCollection.findOne({ pi_payment_id: paymentId });
+    // const order = await orderCollection.findOne({ pi_payment_id: paymentId });
+    const order = await InvoicesModel.findOne({ pi_payment_id: paymentId });
 
     // order doesn't exist
     if (!order) {
@@ -45,7 +47,11 @@ export default function mountPaymentsEndpoints(router: Router) {
     }
 
     // mark the order as paid
-    await orderCollection.updateOne(
+    // await orderCollection.updateOne(
+    //   { pi_payment_id: paymentId },
+    //   { $set: { txid, paid: true } }
+    // );
+    await InvoicesModel.updateOne(
       { pi_payment_id: paymentId },
       { $set: { txid, paid: true } }
     );
@@ -72,22 +78,28 @@ export default function mountPaymentsEndpoints(router: Router) {
       `/v2/payments/${paymentId}`,
       config
     );
-    const orderCollection = app.locals.orderCollection;
+    console.log(currentPayment);
+    // const orderCollection = app.locals.orderCollection;
 
     /* 
       implement your logic here 
       e.g. creating an order record, reserve an item if the quantity is limited, etc...
     */
 
-    await orderCollection.insertOne({
-      pi_payment_id: paymentId,
-      product_id: currentPayment.data.metadata.productId,
-      user: req.body.uid,
-      txid: null,
-      paid: false,
-      cancelled: false,
-      created_at: new Date(),
-    });
+    // await orderCollection.insertOne({
+    //   pi_payment_id: paymentId,
+    //   product_id: currentPayment.data.metadata.productId,
+    //   user: req.body.uid,
+    //   txid: null,
+    //   paid: false,
+    //   cancelled: false,
+    //   created_at: new Date(),
+    // });
+
+    await InvoicesModel.updateOne(
+      { invoiceId: req.body.uid },
+      { $set: { pi_payment_id: paymentId } }
+    );
 
     // let Pi Servers know that you're ready
    const responseFromPi = await platformAPIClient.post(`/v2/payments/${paymentId}/approve`, {} , config);
@@ -102,7 +114,7 @@ export default function mountPaymentsEndpoints(router: Router) {
 
     const paymentId = req.body.paymentId;
     const txid = req.body.txid;
-    const orderCollection = app.locals.orderCollection;
+    // const orderCollection = app.locals.orderCollection;
 
     /* 
       implement your logic here
@@ -110,10 +122,22 @@ export default function mountPaymentsEndpoints(router: Router) {
     */
 
     try {
-      await orderCollection.updateOne(
+      // await orderCollection.updateOne(
+      //   { pi_payment_id: paymentId },
+      //   { $set: { txid: txid, paid: true } }
+      // );
+      const payment = await platformAPIClient.get(`/v2/payments/${paymentId!}`);
+
+      const invoice = await InvoicesModel.findOneAndUpdate(
         { pi_payment_id: paymentId },
-        { $set: { txid: txid, paid: true } }
+        { $set: { txid: txid, paid: true, tip: payment.data?.metadata?.tip } },
+        { new: true }
       );
+      if (!invoice) {
+        return res
+          .status(404)
+          .json({ error: "not_found", message: "Invoice not found" });
+      }
 
       // let Pi server know that the payment is completed
       await platformAPIClient.post(
@@ -129,16 +153,16 @@ export default function mountPaymentsEndpoints(router: Router) {
       //     message: `user needs to be signed in`,
       //   });
       // }
+
+      return res
+        .status(200)
+        .json({ message: `Completed the payment ${paymentId}` });
     } catch (error) {
       console.log(error);
       res.status(500).json({
         message: `an error occured and couldn't complete the payment of ${paymentId}`,
       });
     }
-
-    return res
-      .status(200)
-      .json({ message: `Completed the payment ${paymentId}` });
   });
 
   // handle the cancelled payment
@@ -153,7 +177,11 @@ export default function mountPaymentsEndpoints(router: Router) {
       e.g. mark the order record to cancelled, etc...
     */
 
-    await orderCollection.updateOne(
+    // await orderCollection.updateOne(
+    //   { pi_payment_id: paymentId },
+    //   { $set: { cancelled: true } }
+    // );
+    await InvoicesModel.updateOne(
       { pi_payment_id: paymentId },
       { $set: { cancelled: true } }
     );

@@ -25,20 +25,21 @@ import {
   updateRequest,
   subscribeUser,
 } from "./handlers/testdb";
+import MongoStore from "connect-mongo";
 
 const app: express.Application = express();
 
 // for hosting
-// if (process.env.NODE_ENV === "production") {
-//   app.use("/", express.static("../build"));
+if (process.env.NODE_ENV === "production") {
+  app.use("/", express.static("../build"));
 
-//   app.get("*", (req, res) => {
-//     res.sendFile(path.join(__dirname, "..", "build", "index.html"));
-//   });
-// }
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+  });
+}
 
 // // for local
-app.use(express.static(path.resolve(__dirname, "../client/build")));
+// app.use(express.static(path.resolve(__dirname, "../client/build")));
 
 // Log requests to the console in a compact format:
 app.use(logger("dev"));
@@ -66,12 +67,17 @@ app.use(
 // Handle cookies 🍪
 app.use(cookieParser());
 
+const mongoUri = process.env.MONGO_URI;
 //  Use sessions:
 app.use(
   session({
     secret: env.session_secret,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: mongoUri,
+      collectionName: "user_sessions",
+    }),
   })
 );
 
@@ -99,7 +105,6 @@ app.use(errorMiddleware);
 
 // III. Boot up the app:
 
-const mongoUri = process.env.MONGO_URI;
 const port = process.env.PORT || 9001;
 
 const start = async () => {
