@@ -32,13 +32,12 @@ let todayDate = new Date(todayDateString)
       });
 //confirminig user info
       if (data) { 
-        setMsg(data.user.username);
         // checking if subscribed
         if(data.user.expireIn){
-          notSubscribed = todayDate < data.user.expireIn //returns false if they are subscribed
+          notSubscribed = todayDate < new Date(data.user.expiresIn) //returns false if they are subscribed
           //pls do not format my code read it on one line!!
         }
-       
+       setMsg(data.user.username);
     } 
      
     };
