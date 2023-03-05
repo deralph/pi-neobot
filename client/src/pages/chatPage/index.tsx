@@ -172,9 +172,7 @@ const ChatPage: React.FC<props> = ({
 
   const sub = async () => {
     try {
-      await subscribe("subscription for Neobot premium", 5, {
-        productId: "neobot premium",
-      });
+      await subscribe("subscription for Neobot premium", 5, { productId: "neobot premium", });
       const { data } = await axiosClient.post("/subscribe-user", {
         username: user?.username,
       });
