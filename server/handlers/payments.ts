@@ -7,7 +7,7 @@ import "../types/session";
 
 const config = {
   headers: {
-    'Authorization': `Key keftdljlayea9c12rjumna24ptsewomoo8mb1vonnzexpo8lcgkxjlxbrunyfmmk`,
+    Authorization: `Key keftdljlayea9c12rjumna24ptsewomoo8mb1vonnzexpo8lcgkxjlxbrunyfmmk`,
   },
 };
 
@@ -130,7 +130,10 @@ export default function mountPaymentsEndpoints(router: Router) {
       //   { pi_payment_id: paymentId },
       //   { $set: { txid: txid, paid: true } }
       // );
-      const payment = await platformAPIClient.get(`/v2/payments/${paymentId!}`);
+      const payment = await platformAPIClient.get(
+        `/v2/payments/${paymentId!}`,
+        config
+      );
 
       const invoice = await InvoicesModel.findOneAndUpdate(
         { pi_payment_id: paymentId },
