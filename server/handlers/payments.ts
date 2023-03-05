@@ -140,13 +140,8 @@ export default function mountPaymentsEndpoints(router: Router) {
       }
 
       // let Pi server know that the payment is completed
-      await platformAPIClient.post(
-        `/v2/payments/${paymentId}/complete`,
-        {
-          txid,
-        },
-        config
-      );
+      const responseFromPi = await platformAPIClient.post(`/v2/payments/${paymentId}/complete` , {txid} , config );
+      
       // const User = await user.subscribeUser(req.body.username);
       // if (!User) {
       //   res.status(500).json({
