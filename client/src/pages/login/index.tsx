@@ -9,6 +9,7 @@ interface signIn {
   signIn: () => void;
   user: User | null;
 }
+export let notSubscribed = true
 
 const Login: React.FC<signIn> = ({ signIn, user }) => {
   const [msg, setMsg] = useState<string>("");
@@ -22,19 +23,25 @@ const Login: React.FC<signIn> = ({ signIn, user }) => {
   });
 
   const log = async () => {
-    try {
-      // signIn();
-
-      const { data } = await axiosClient.post("/check-user", {
+  //getting todays date
+let todayDateString = new Date().toLocaleDateString();
+let todayDate = new Date(todayDateString)
+//getting user details
+  const { data } = await axiosClient.post("/check-user", {
         username: user?.username,
       });
-      if (data) {
+//confirminig user info
+      if (data) { 
         setMsg(data.user.username);
-      }
-    } catch (error) {
-      setMsg(`login unsucessful`);
-    }
-  };
+        // checking if subscribed
+        if(data.user.expireIn){
+          notSubscribed = todayDate < data.user.expireIn //returns false if they are subscribed
+          //pls do not format my code read it on one line!!
+        }
+       
+    } 
+     
+    };
 
   return (
     <div className="text-center">
@@ -58,7 +65,6 @@ const Login: React.FC<signIn> = ({ signIn, user }) => {
             <img src={piLogo} alt="" className="w-10" />
             Login with Pi
           </button>
-          <p className="">{msg}</p>
           {msg && <Navigate to="/chatPage" />}
 
           {/* back door button  to login for test*/}

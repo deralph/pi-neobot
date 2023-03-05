@@ -8,6 +8,7 @@ import {
   User,
 } from "../../App";
 import { ColorModes } from "../../App";
+import { notSubscribed } from "../login";
 
 const config = {
   headers: {
@@ -246,8 +247,8 @@ const ChatPage: React.FC<props> = ({
                 <div className="h-1 w-6 bg-black dark:bg-white"></div>
               </div>
             </header>
-
-            <div className="alert pt-[10px] px-[6px] pb-[25px] bg-slate-400 mt-2 md:mt-1 mb-3 mx-auto w-full rounded dark:bg-white">
+{/* If user has not subscribed this will show */}
+         {notSubscribed &&  <div className="alert pt-[10px] px-[6px] pb-[25px] bg-slate-400 mt-2 md:mt-1 mb-3 mx-auto w-full rounded dark:bg-white">
               <p>
                 Click the subscribe button to continue using Neobot after the
                 free trial expires{""}
@@ -259,15 +260,14 @@ const ChatPage: React.FC<props> = ({
                 Subscribe
               </span>
               {submessage && <p className="mt-30">{submessage}</p>}
-            </div>
+            </div>}
+
             <div className="alert">
               Welcome to Neobot, this is a chat bot that will answer your
               questions and help you do things faster. <br />
               Note that some answers maybe inaccurate
             </div>
-            {/* removing becuase of too much content */}
-            {/* <div className="alert">This chatbot will not provide answer to inapproprite questions</div> */}
-          </div>
+          </div> 
 
 
 <div className="mt-[210px]">
