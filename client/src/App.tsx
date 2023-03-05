@@ -6,7 +6,7 @@ import Welcome from "./pages/welcome";
 import ChatPage from "./pages/chatPage";
 import TandC from "./pages/TandC";
 
-type AuthResult = {
+export type AuthResult = {
   accessToken: string;
   user: {
     uid: string;
@@ -16,7 +16,7 @@ type AuthResult = {
 
 export type User = AuthResult["user"];
 
-interface PaymentDTO {
+export interface PaymentDTO {
   amount: number;
   user_uid: string;
   created_at: string;
@@ -50,7 +50,7 @@ const _window: WindowWithEnv = window;
 const backendURL = _window.__ENV && _window.__ENV.backendURL;
 
 const axiosClient = axios.create({
-  baseURL: `${backendURL}`,
+  baseURL: `https://neobot.online`,
   timeout: 20000,
   withCredentials: true,
 });
@@ -63,7 +63,7 @@ const config = {
 
 export interface MyPaymentMetadata {}
 
-type PaymentCallbacks = {
+export type PaymentCallbacks = {
   onReadyForServerApproval: (paymentId: string, uid: string) => void;
   onReadyForServerCompletion: (
     paymentId: string,
@@ -125,7 +125,7 @@ function App() {
     return axiosClient.post("/payments/incomplete", { payment });
   };
 
-  const onReadyForServerApproval = (paymentId: string, uid: string) => {
+  const onReadyForServerApproval = (paymentId: string) => {
     console.log("onReadyForServerApproval", paymentId);
     axiosClient.post(
       "/payments/approve",
@@ -191,7 +191,7 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Welcome />} />
+        <Route path="/" element={<Welcome signIn={signIn} />} />
         {user && (
           <Route
             path="/login"
@@ -206,7 +206,6 @@ function App() {
               <ChatPage
                 signOut={signOut}
                 user={user}
-                subscribe={subscribe}
                 darkMode={darkMode}
                 darkModeToggele={darkModeToggele}
               />

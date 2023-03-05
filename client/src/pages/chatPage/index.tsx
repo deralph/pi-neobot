@@ -1,8 +1,20 @@
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { MyPaymentMetadata, User } from "../../App";
+import {
+  MyPaymentMetadata,
+  PaymentCallbacks,
+  PaymentDTO,
+  User,
+} from "../../App";
 import { ColorModes } from "../../App";
+
+const config = {
+  headers: {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  },
+};
 
 interface Message {
   id: number;
@@ -15,17 +27,11 @@ interface props {
   darkMode: () => void;
   darkModeToggele: ColorModes;
   user: User | null;
-  subscribe: (
-    memo: string,
-    amount: number,
-    paymentMetadata: MyPaymentMetadata
-  ) => void;
 }
 
 const ChatPage: React.FC<props> = ({
   signOut,
   user,
-  subscribe,
   darkMode,
   darkModeToggele,
 }) => {
@@ -35,7 +41,7 @@ const ChatPage: React.FC<props> = ({
   const [mobileMenuToggle, setMobileMenuToggle] = useState(false);
 
   // setting up axios
-  
+
   // host for local testing
   // const backend_URL = "http://localhost:9001";
 
@@ -60,9 +66,12 @@ const ChatPage: React.FC<props> = ({
 
     if (message.length > 0) {
       try {
-        const { data } = await axiosClient.post("/generate-output", { text: message, username: user?.username});
+        const { data } = await axiosClient.post("/generate-output", {
+          text: message,
+          username: user?.username,
+        });
         console.log(data);
-        
+
         if (data.message) {
           const newReply: Message = {
             id: messages.length + 2,
@@ -105,14 +114,73 @@ const ChatPage: React.FC<props> = ({
     setMessage("");
   };
 
+  const subscribe = async (
+    memo: string,
+    amount: number,
+    paymentMetadata: MyPaymentMetadata
+  ) => {
+    const paymentData = { amount, memo, metadata: paymentMetadata };
+    const callbacks: PaymentCallbacks = {
+      onReadyForServerApproval,
+      onReadyForServerCompletion,
+      onCancel,
+      onError,
+    };
+    const payment = await window.Pi.createPayment(paymentData, callbacks);
+    console.log(payment);
+  };
+
+  const onIncompletePaymentFound = (payment: PaymentDTO) => {
+    console.log("onIncompletePaymentFound", payment);
+    return axiosClient.post("/payments/incomplete", { payment });
+  };
+
+  const onReadyForServerApproval = (paymentId: string, uid: string) => {
+    console.log("onReadyForServerApproval", paymentId);
+    axiosClient.post(
+      "/payments/approve",
+      { paymentId, uid: user?.uid },
+      config
+    );
+  };
+
+  const onReadyForServerCompletion = (
+    paymentId: string,
+    txid: string,
+    username: string
+  ) => {
+    console.log("onReadyForServerCompletion", paymentId, txid);
+    axiosClient.post(
+      "/payments/complete",
+      { paymentId, txid, username: user?.username },
+      config
+    );
+  };
+
+  const onCancel = (paymentId: string) => {
+    console.log("onCancel", paymentId);
+    return axiosClient.post("/payments/cancelled_payment", { paymentId });
+  };
+
+  const onError = (error: Error, payment?: PaymentDTO) => {
+    console.log("onError", error);
+    if (payment) {
+      console.log(payment);
+      // handle the error accordingly
+    }
+  };
+
   const sub = async () => {
     try {
-     subscribe("subscription for Neobot premium", 5, {productId:'neobot premium'});
-     const { data} = await axiosClient.post("/suscribe-user", { username: user?.username});
-     if(data){
-      setSubMessage("subscription successful \n Enjoy your features!");
-     }
-      
+      await subscribe("subscription for Neobot premium", 5, {
+        productId: "neobot premium",
+      });
+      const { data } = await axiosClient.post("/subscribe-user", {
+        username: user?.username,
+      });
+      if (data) {
+        setSubMessage("subscription successful \n Enjoy your features!");
+      }
     } catch (error) {
       setSubMessage("Unable to subscribe \n Try again later");
     }

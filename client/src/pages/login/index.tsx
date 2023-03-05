@@ -23,7 +23,7 @@ const Login: React.FC<signIn> = ({ signIn, user }) => {
 
   const log = async () => {
     try {
-      signIn();
+      // signIn();
 
       const { data } = await axiosClient.post("/check-user", {
         username: user?.username,

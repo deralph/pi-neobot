@@ -29,16 +29,16 @@ import {
 const app: express.Application = express();
 
 // for hosting
-if (process.env.NODE_ENV === "production") {
-  app.use("/", express.static("../build"));
+// if (process.env.NODE_ENV === "production") {
+//   app.use("/", express.static("../build"));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "..", "build", "index.html"));
-  });
-}
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+//   });
+// }
 
 // // for local
-// app.use(express.static(path.resolve(__dirname, "../client/build")));
+app.use(express.static(path.resolve(__dirname, "../client/build")));
 
 // Log requests to the console in a compact format:
 app.use(logger("dev"));
@@ -104,7 +104,7 @@ const port = process.env.PORT || 9001;
 
 const start = async () => {
   try {
-    await connectDB(mongoUri!);
+    await connectDB();
     app.listen(port, () => console.log(`server listening at port ${port}`));
   } catch (error) {
     console.log("connect error");
