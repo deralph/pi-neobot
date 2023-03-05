@@ -22,7 +22,7 @@ export const createUser = async (req: Request, res: Response) => {
     res.status(200).json({ User: User });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ User: "unable to create user" });
+    res.status(500).json({ error: "unable to create user" });
   }
 };
 
@@ -32,6 +32,6 @@ export const subscribeUser = async (req: Request, res: Response) => {
     res.status(200).json({ User: User_ });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ User: "unable to find user" });
+    res.status(500).json({ error: "unable to find user" });
   }
 };
