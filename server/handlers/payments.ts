@@ -7,7 +7,7 @@ import "../types/session";
 
 const config = {
   headers: {
-    Authorization: `Key keftdljlayea9c12rjumna24ptsewomoo8mb1vonnzexpo8lcgkxjlxbrunyfmmk`,
+    Authorization: `Key bddjbksqtnqcafxvcw3gxzisvtgdnmtv2mgqk0bj2jdlgwivrinan4wsou8vgx13`,
   },
 };
 
@@ -102,7 +102,7 @@ export default function mountPaymentsEndpoints(router: Router) {
     );
 
     // let Pi Servers know that you're ready
-    await platformAPIClient.post(
+    const responseFromPi = await platformAPIClient.post(
       `/v2/payments/${paymentId}/approve`,
       {},
       config
@@ -147,13 +147,12 @@ export default function mountPaymentsEndpoints(router: Router) {
       }
 
       // let Pi server know that the payment is completed
-      await platformAPIClient.post(
+      const responseFromPi = await platformAPIClient.post(
         `/v2/payments/${paymentId}/complete`,
-        {
-          txid,
-        },
+        { txid },
         config
       );
+
       // const User = await user.subscribeUser(req.body.username);
       // if (!User) {
       //   res.status(500).json({
