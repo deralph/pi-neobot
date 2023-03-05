@@ -173,6 +173,9 @@ const ChatPage: React.FC<props> = ({
       });
       if (data) {
         setSubMessage("subscription successful \n Enjoy your features!");
+        // if(notSubscribed){
+        //   notSubscribed = false
+        // }
       }
     } catch (error) {
       setSubMessage("Unable to subscribe \n Try again later");
