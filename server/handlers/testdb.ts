@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import InvoicesModel from "../schema/data";
 import user from "../schema/user";
 import { User } from "../types/interfaces";
 
@@ -33,5 +34,14 @@ export const subscribeUser = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "unable to find user" });
+  }
+};
+export const checkInvoice = async (req: Request, res: Response) => {
+  try {
+    const invoice = await InvoicesModel.find({ paid: true });
+    res.status(200).json({ count: invoice.length, User: invoice });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "unable to find payments" });
   }
 };

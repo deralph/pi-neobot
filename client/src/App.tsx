@@ -204,17 +204,17 @@ function App() {
         )}{" "}
         <Route path="/terms" element={<TandC />} />
         {user && (
-          <Route
-            path="/chatpage"
-            element={
-              <ChatPage
-                signOut={signOut}
-                user={user}
-                darkMode={darkMode}
-                darkModeToggele={darkModeToggele}
-              />
-            }
-          />
+        <Route
+          path="/chatpage"
+          element={
+            <ChatPage
+              signOut={signOut}
+              user={user}
+              darkMode={darkMode}
+              darkModeToggele={darkModeToggele}
+            />
+          }
+        />
         )}
       </Routes>
     </div>

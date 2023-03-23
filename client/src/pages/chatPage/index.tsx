@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   MyPaymentMetadata,
@@ -42,6 +42,8 @@ const ChatPage: React.FC<props> = ({
   const [mobileMenuToggle, setMobileMenuToggle] = useState(false);
   const [notsub, setNotsub] = useState<boolean>(notSubscribed);
 
+  const bottomRef = useRef<null | HTMLDivElement>(null);
+
   // setting up axios
 
   // host for local testing
@@ -55,6 +57,8 @@ const ChatPage: React.FC<props> = ({
     withCredentials: true,
   });
 
+  const msg = `An error occured, try again later. \n I'm sorry, this might have occured because I couldn't understand your input. Please try rephrasing your question or providing more context. If you're still having trouble try to log out and login again, if error continues please reach out to us on pi-neobot@gmail.com.`;
+
   const change = (e: React.ChangeEvent<HTMLInputElement>) =>
     setMessage(e.target.value);
 
@@ -66,7 +70,16 @@ const ChatPage: React.FC<props> = ({
       author: "Me",
     };
 
+    const loading: Message = {
+      id: messages.length + 2,
+      content: "loading...",
+      author: "Ai",
+    };
+
     if (message.length > 0) {
+      // display user message and loading
+      setMessages([...messages, newMessage, loading]);
+
       try {
         const { data } = await axiosClient.post("/generate-output", {
           text: message,
@@ -75,11 +88,16 @@ const ChatPage: React.FC<props> = ({
         console.log(data);
 
         if (data.message) {
+          // removing the loading messege
+          // messages.pop();
+
+          // creating an instance for the Ai reply
           const newReply: Message = {
             id: messages.length + 2,
             content: data.message,
             author: "Ai",
           };
+          // setMessages([...messages, newReply]);
           setMessages([...messages, newMessage, newReply]);
         } else if (data.error && data.error !== "invalid access token") {
           const newReply: Message = {
@@ -94,26 +112,29 @@ const ChatPage: React.FC<props> = ({
             content: "invalid access token",
             author: "Ai",
           };
-          setMessages([...messages, newMessage, newReply]);
+          setMessages([...messages, newReply]);
         } else {
           const newReply: Message = {
             id: messages.length + 2,
-            content: "An error occured, try again later",
+            content: msg,
             author: "Ai",
           };
-          setMessages([...messages, newMessage, newReply]);
+          setMessages([...messages, newReply]);
         }
       } catch (error) {
+        // removing the loading messege
+        // messages.pop();
         const newReply: Message = {
           id: messages.length + 2,
-          content: "An error occured, try again later",
+          content: msg,
           author: "Ai",
         };
         setMessages([...messages, newMessage, newReply]);
       }
     }
-
+    bottomRef.current!.scrollIntoView({ behavior: "smooth" });
     setMessage("");
+    console.log(messages);
   };
 
   const subscribe = async (
@@ -312,6 +333,7 @@ const ChatPage: React.FC<props> = ({
               </div>
             ))}
           </div>
+          <div ref={bottomRef} />
         </div>
 
         {/* message input */}
@@ -319,14 +341,14 @@ const ChatPage: React.FC<props> = ({
           <input
             required
             type="text"
-            placeholder="Message"
-            className=" text-lg w-full focus:shadow-xl rounded-full py-3 px-4 lg:w-full"
+            placeholder="Message..."
+            className=" text-lg w-full focus:shadow-xl rounded-full py-3 px-4 lg:w-full outline-none"
             onChange={(e) => change(e)}
             value={message}
           />
           <span
             onClick={() => display()}
-            className=" material-symbols-outlined bg-cerulean duration-300 text-4xl text-white hover:text-cerulean hover:bg-transparent rounded-full px-3 py-2 "
+            className=" material-symbols-outlined bg-cerulean duration-300 text-4xl text-white active:text-cerulean active:bg-transparent rounded-full px-3 py-2 "
           >
             send
           </span>
