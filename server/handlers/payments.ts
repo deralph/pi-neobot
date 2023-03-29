@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Router } from "express";
-import InvoicesModel from "../schema/data";
+import PaymentModel from "../schema/payment";
 import platformAPIClient from "../services/platformAPIClient";
 import "../types/session";
 
@@ -19,7 +19,7 @@ export default function mountPaymentsEndpoints(router: Router) {
     const txURL = payment.transaction && payment.transaction._link;
 
     // find the incomplete order
-    const order = await InvoicesModel.findOne({ pi_payment_id: paymentId });
+    const order = await PaymentModel.findOne({ pi_payment_id: paymentId });
 
     // // order doesn't exist
     if (!order) {
@@ -37,7 +37,7 @@ export default function mountPaymentsEndpoints(router: Router) {
 
     // mark the order as paid
 
-    await InvoicesModel.findOneAndUpdate(
+    await PaymentModel.findOneAndUpdate(
       { pi_payment_id: paymentId },
       { paid: true },
       {
@@ -67,7 +67,7 @@ export default function mountPaymentsEndpoints(router: Router) {
     );
     console.log(currentPayment);
 
-    await InvoicesModel.create({
+    await PaymentModel.create({
       username: req.body.username,
       uid: req.body.uid,
       pi_payment_id: paymentId,
@@ -98,7 +98,7 @@ export default function mountPaymentsEndpoints(router: Router) {
         config
       );
       console.log(payment);
-      const invoice = await InvoicesModel.findOneAndUpdate(
+      const invoice = await PaymentModel.findOneAndUpdate(
         { pi_payment_id: paymentId },
         { paid: true },
         {
@@ -139,7 +139,7 @@ export default function mountPaymentsEndpoints(router: Router) {
       implement your logic here
     */
 
-    await InvoicesModel.findOneAndUpdate(
+    await PaymentModel.findOneAndUpdate(
       { pi_payment_id: paymentId },
       { cancelled: true },
       { new: true }

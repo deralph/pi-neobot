@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import user from "../schema/user";
 
 import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
-// require("dotenv").config();
 
 const answer = async (req: Request, res: Response) => {
   const { text } = req.body;
@@ -37,21 +36,13 @@ const answer = async (req: Request, res: Response) => {
     }
 
     const message: ChatCompletionRequestMessage[] = [
-      { role: "system", content: `You are a typescript developer.` },
-      {
-        role: "user",
-        content: "Which npm package is best of openai api development?",
-      },
-      {
-        role: "assistant",
-        content: "The 'openai' Node.js library.",
-      },
       { role: "user", content: text },
     ];
 
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: message,
+      max_tokens: 800,
     });
 
     if (!response?.data?.choices[0].message?.content) {

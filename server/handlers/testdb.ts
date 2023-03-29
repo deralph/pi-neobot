@@ -1,5 +1,6 @@
+import exp from "constants";
 import { Router, Request, Response } from "express";
-import InvoicesModel from "../schema/data";
+import PaymentModel from "../schema/payment";
 import user from "../schema/user";
 import { User } from "../types/interfaces";
 
@@ -38,8 +39,22 @@ export const subscribeUser = async (req: Request, res: Response) => {
 };
 export const checkInvoice = async (req: Request, res: Response) => {
   try {
-    const invoice = await InvoicesModel.find({ paid: true });
-    res.status(200).json({ count: invoice.length, User: invoice });
+    const allUsers = await user.findAll();
+    const allpayments = await PaymentModel.find({ paid: true });
+    const paidUser: object[] = [];
+    allUsers.map((user: any) => {
+      if (user.expiresIn) {
+        paidUser.push(user);
+      }
+    });
+
+    res.status(200).json({
+      count: allUsers.length,
+      subscribers: paidUser.length,
+      fullyPaid: allpayments.length,
+      allUsers,
+      paidUser,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "unable to find payments" });
