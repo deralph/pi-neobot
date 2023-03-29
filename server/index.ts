@@ -10,7 +10,6 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import logger from "morgan";
-import { MongoClient } from "mongodb";
 import env from "./environments";
 import mountPaymentsEndpoints from "./handlers/payments";
 import mountUserEndpoints from "./handlers/users";
@@ -29,7 +28,7 @@ const app: express.Application = express();
 //   app.use("/", express.static("../build"));
 
 //   app.get("*", (req, res) => {
-//     res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+// res.sendFile(path.join(__dirname, "..", "build", "index.html"));
 //   });
 // }
 
