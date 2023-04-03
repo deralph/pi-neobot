@@ -18,7 +18,12 @@ import "./types/session";
 import answer from "./chatGpt/chat";
 import connectDB from "./connectDB";
 import errorMiddleware from "./handlers/errorMIddleware";
-import { checkInvoice, createUser, subscribeUser } from "./handlers/testdb";
+import {
+  checkInvoice,
+  checkUser,
+  createUser,
+  subscribeUser,
+} from "./handlers/testdb";
 import MongoStore from "connect-mongo";
 
 const app: express.Application = express();
@@ -93,13 +98,14 @@ app.use("/subscribe-user", subscribeUser);
 
 // generate answer endpoint
 app.post("/generate-output", answer);
-app.post("/chack-paid", checkInvoice);
+app.post("/check-paid", checkInvoice);
+app.post("/check-user", checkUser);
 
 app.use(errorMiddleware);
 
 // III. Boot up the app:
 
-const port = process.env.PORT || 9001;
+const port = process.env.PORT || 5000;
 
 const start = async () => {
   try {

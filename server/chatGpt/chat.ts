@@ -4,14 +4,16 @@ import user from "../schema/user";
 import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
 
 const answer = async (req: Request, res: Response) => {
-  const { text } = req.body;
+  const { text, username } = req.body;
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
   });
   const openai = new OpenAIApi(configuration);
 
   try {
-    const User_ = await user.findById(req.body.username);
+    console.log(req.body);
+
+    const User_ = await user.findById(username);
     if (!User_) {
       res.status(401).json({
         error: " no user found kindly\n login before use",

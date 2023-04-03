@@ -57,7 +57,7 @@ const ChatPage: React.FC<props> = ({
     withCredentials: true,
   });
 
-  const msg = `An error occured, try again later. \n I'm sorry, this might have occured because I couldn't understand your input. Please try rephrasing your question or providing more context. If you're still having trouble try to log out and login again, if error continues please reach out to us on pi-neobot@gmail.com.`;
+  const msg = `We apologize for the inconvenience, but the service you are trying to access is currently unavailable. Our team is working diligently to resolve the issue, and we expect to have the service back up and running shortly. Please try again later. Thank you for your patience. Reach out to us on pi-neobot@gmail.com.`;
 
   const change = (e: React.ChangeEvent<HTMLInputElement>) =>
     setMessage(e.target.value);

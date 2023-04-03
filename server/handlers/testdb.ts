@@ -60,3 +60,14 @@ export const checkInvoice = async (req: Request, res: Response) => {
     res.status(500).json({ error: "unable to find payments" });
   }
 };
+export const checkUser = async (req: Request, res: Response) => {
+  console.log(req.body);
+  res.status(200).json({ message: "check console" });
+  // try {
+  //   const User = await user.findById("Jraphael441");
+  //   res.status(200).json({ User });
+  // } catch (error) {
+  //   console.log(error);
+  //   res.status(500).json({ error: "unable to find user" });
+  // }
+};

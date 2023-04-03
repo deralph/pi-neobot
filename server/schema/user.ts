@@ -9,13 +9,16 @@ const userSchema = new Schema<User>({
   },
   subscribedIn: {
     type: String,
+    default: "",
   },
   expiresIn: {
     type: String,
+    default: "",
   },
 
   requestNo: {
     type: Number,
+    default: 0,
   },
 });
 
