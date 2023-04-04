@@ -1,10 +1,10 @@
 {
-  "name": "app-platform-demo-backend",
+  "name": "neobot-backend-server",
   "version": "1.0.0",
   "license": "MIT",
-  "description": "A demo app to showcase usage of the Pi App Platform.",
+  "description": "Neobot, am ai chat bot on the Pi network",
   "author": {
-    "name": "Pi Core Team"
+    "name": "Neobot Team"
   },
   "scripts": {
     "mainBuild": "cd.. && tsc -p .",

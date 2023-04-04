@@ -203,7 +203,7 @@ function App() {
           />
         )}{" "}
         <Route path="/terms" element={<TandC />} />
-        {user && (
+        {
           <Route
             path="/chatpage"
             element={
@@ -215,7 +215,7 @@ function App() {
               />
             }
           />
-        )}
+        }
       </Routes>
     </div>
   );

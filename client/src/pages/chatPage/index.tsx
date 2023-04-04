@@ -45,10 +45,10 @@ const ChatPage: React.FC<props> = ({
   // setting up axios
 
   // host for local testing
-  // const backend_URL = "http://localhost:9001";
+  const backend_URL = "http://localhost:9001";
 
   // host for live testing
-  const backend_URL = "https://neobot.online";
+  // const backend_URL = "https://neobot.online";
   const axiosClient = axios.create({
     baseURL: `${backend_URL}`,
     timeout: 20000,
@@ -66,7 +66,17 @@ const ChatPage: React.FC<props> = ({
       author: "Me",
     };
 
+    const loading: Message = {
+      id: messages.length + 2,
+      content: 'loading...',
+      author: "Ai",
+    };
+
     if (message.length > 0) {
+
+        // display user message and loading
+      setMessages([...messages, newMessage, loading]);
+
       try {
         const { data } = await axiosClient.post("/generate-output", {
           text: message,
@@ -75,12 +85,16 @@ const ChatPage: React.FC<props> = ({
         console.log(data);
 
         if (data.message) {
+          // removing the loading messege
+          messages.pop();
+
+          // creating an instance for the Ai reply
           const newReply: Message = {
             id: messages.length + 2,
             content: data.message,
             author: "Ai",
           };
-          setMessages([...messages, newMessage, newReply]);
+          setMessages([...messages, newReply]);
         } else if (data.error && data.error !== "invalid access token") {
           const newReply: Message = {
             id: messages.length + 2,
@@ -94,16 +108,19 @@ const ChatPage: React.FC<props> = ({
             content: "invalid access token",
             author: "Ai",
           };
-          setMessages([...messages, newMessage, newReply]);
+          setMessages([...messages, newReply]);
         } else {
           const newReply: Message = {
             id: messages.length + 2,
             content: "An error occured, try again later",
             author: "Ai",
           };
-          setMessages([...messages, newMessage, newReply]);
-        }
-      } catch (error) {
+          setMessages([...messages, newReply]);
+        };
+      }
+       catch (error) {
+        // removing the loading messege
+        // messages.pop();
         const newReply: Message = {
           id: messages.length + 2,
           content: "An error occured, try again later",
@@ -111,9 +128,9 @@ const ChatPage: React.FC<props> = ({
         };
         setMessages([...messages, newMessage, newReply]);
       }
+  
     }
-
-    setMessage("");
+  setMessage("");
   };
 
   const subscribe = async (
@@ -319,14 +336,14 @@ const ChatPage: React.FC<props> = ({
           <input
             required
             type="text"
-            placeholder="Message"
-            className=" text-lg w-full focus:shadow-xl rounded-full py-3 px-4 lg:w-full"
+            placeholder="Message..."
+            className=" text-lg w-full focus:shadow-xl rounded-full py-3 px-4 lg:w-full outline-none"
             onChange={(e) => change(e)}
             value={message}
           />
           <span
             onClick={() => display()}
-            className=" material-symbols-outlined bg-cerulean duration-300 text-4xl text-white hover:text-cerulean hover:bg-transparent rounded-full px-3 py-2 "
+            className=" material-symbols-outlined bg-cerulean duration-300 text-4xl text-white active:text-cerulean active:bg-transparent rounded-full px-3 py-2 "
           >
             send
           </span>
