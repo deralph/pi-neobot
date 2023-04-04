@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   MyPaymentMetadata,
@@ -42,6 +42,8 @@ const ChatPage: React.FC<props> = ({
   const [mobileMenuToggle, setMobileMenuToggle] = useState(false);
   const [notsub, setNotsub] = useState<boolean>(notSubscribed);
 
+  const bottomRef = useRef<null | HTMLDivElement>(null);
+
   // setting up axios
 
   // host for local testing
@@ -54,6 +56,8 @@ const ChatPage: React.FC<props> = ({
     timeout: 20000,
     withCredentials: true,
   });
+
+  const msg = `We apologize for the inconvenience, but the service you are trying to access is currently unavailable. Our team is working diligently to resolve the issue, and we expect to have the service back up and running shortly. Please try again later. Thank you for your patience. Reach out to us on pi-neobot@gmail.com.`;
 
   const change = (e: React.ChangeEvent<HTMLInputElement>) =>
     setMessage(e.target.value);
@@ -68,13 +72,12 @@ const ChatPage: React.FC<props> = ({
 
     const loading: Message = {
       id: messages.length + 2,
-      content: 'loading...',
+      content: "loading...",
       author: "Ai",
     };
 
     if (message.length > 0) {
-
-        // display user message and loading
+      // display user message and loading
       setMessages([...messages, newMessage, loading]);
 
       try {
@@ -86,7 +89,7 @@ const ChatPage: React.FC<props> = ({
 
         if (data.message) {
           // removing the loading messege
-          messages.pop();
+          // messages.pop();
 
           // creating an instance for the Ai reply
           const newReply: Message = {
@@ -94,7 +97,8 @@ const ChatPage: React.FC<props> = ({
             content: data.message,
             author: "Ai",
           };
-          setMessages([...messages, newReply]);
+          // setMessages([...messages, newReply]);
+          setMessages([...messages, newMessage, newReply]);
         } else if (data.error && data.error !== "invalid access token") {
           const newReply: Message = {
             id: messages.length + 2,
@@ -112,25 +116,26 @@ const ChatPage: React.FC<props> = ({
         } else {
           const newReply: Message = {
             id: messages.length + 2,
-            content: "An error occured, try again later",
+            content: msg,
             author: "Ai",
           };
           setMessages([...messages, newReply]);
-        };
-      }
-       catch (error) {
+        }
+      } catch (error) {
         // removing the loading messege
         // messages.pop();
         const newReply: Message = {
           id: messages.length + 2,
-          content: "An error occured, try again later",
+          content: msg,
           author: "Ai",
         };
         setMessages([...messages, newMessage, newReply]);
       }
   
     }
-  setMessage("");
+    bottomRef.current!.scrollIntoView({ behavior: "smooth" });
+    setMessage("");
+    console.log(messages);
   };
 
   const subscribe = async (
@@ -329,6 +334,7 @@ const ChatPage: React.FC<props> = ({
               </div>
             ))}
           </div>
+          <div ref={bottomRef} />
         </div>
 
         {/* message input */}

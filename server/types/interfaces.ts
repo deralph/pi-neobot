@@ -10,4 +10,5 @@ export interface UserModel {
   updateRequest: (username: String, num: number) => any;
   subscribeUser: (username: String) => any;
   createUser: (body: User) => any;
+  findAll: () => any;
 }

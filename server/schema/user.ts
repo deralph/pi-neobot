@@ -9,13 +9,16 @@ const userSchema = new Schema<User>({
   },
   subscribedIn: {
     type: String,
+    default: "",
   },
   expiresIn: {
     type: String,
+    default: "",
   },
 
   requestNo: {
     type: Number,
+    default: 0,
   },
 });
 
@@ -55,6 +58,9 @@ userSchema.statics.subscribeUser = async function (username: string) {
 };
 userSchema.statics.createUser = async function (body: User) {
   return await this.create(body);
+};
+userSchema.statics.findAll = async function () {
+  return await this.find({});
 };
 
 const model_ = model<User, UserModel>("user", userSchema);

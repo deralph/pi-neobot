@@ -10,7 +10,6 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import logger from "morgan";
-import { MongoClient } from "mongodb";
 import env from "./environments";
 import mountPaymentsEndpoints from "./handlers/payments";
 import mountUserEndpoints from "./handlers/users";
@@ -19,7 +18,12 @@ import "./types/session";
 import answer from "./chatGpt/chat";
 import connectDB from "./connectDB";
 import errorMiddleware from "./handlers/errorMIddleware";
-import { createUser, subscribeUser } from "./handlers/testdb";
+import {
+  checkInvoice,
+  checkUser,
+  createUser,
+  subscribeUser,
+} from "./handlers/testdb";
 import MongoStore from "connect-mongo";
 
 const app: express.Application = express();
@@ -27,13 +31,19 @@ const app: express.Application = express();
 // for hosting
 // if (process.env.NODE_ENV === "production") {
 //   app.use("/", express.static("../build"));
+// if (process.env.NODE_ENV === "production") {
+//   app.use("/", express.static("../build"));
 
+//   app.get("*", (req, res) => {
+// res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+//   });
+// }
 //   app.get("*", (req, res) => {
 //     res.sendFile(path.join(__dirname, "..", "build", "index.html"));
 //   });
 // }
 
-// for local
+// // for local
 app.use(express.static(path.resolve(__dirname, "../client/build")));
 
 // Log requests to the console in a compact format:
@@ -94,12 +104,14 @@ app.use("/subscribe-user", subscribeUser);
 
 // generate answer endpoint
 app.post("/generate-output", answer);
+app.post("/check-paid", checkInvoice);
+app.post("/check-user", checkUser);
 
 app.use(errorMiddleware);
 
 // III. Boot up the app:
 
-const port = process.env.PORT || 9001;
+const port = process.env.PORT || 5000;
 
 const start = async () => {
   try {
