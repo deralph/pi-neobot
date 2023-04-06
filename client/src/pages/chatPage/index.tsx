@@ -47,10 +47,10 @@ const ChatPage: React.FC<props> = ({
   // setting up axios
 
   // host for local testing
-  // const backend_URL = "http://localhost:9001";
+  const backend_URL = "http://localhost:9001";
 
   // host for live testing
-  const backend_URL = "https://neobot.online";
+  // const backend_URL = "https://neobot.online";
   const axiosClient = axios.create({
     baseURL: `${backend_URL}`,
     timeout: 20000,
@@ -131,6 +131,7 @@ const ChatPage: React.FC<props> = ({
         };
         setMessages([...messages, newMessage, newReply]);
       }
+  
     }
     bottomRef.current!.scrollIntoView({ behavior: "smooth" });
     setMessage("");
