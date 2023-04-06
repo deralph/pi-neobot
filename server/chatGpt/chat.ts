@@ -11,6 +11,7 @@ const answer = async (req: Request, res: Response) => {
   const openai = new OpenAIApi(configuration);
 
   try {
+    console.log('hi ');
     console.log(req.body);
 
     const User_ = await user.findById(username);

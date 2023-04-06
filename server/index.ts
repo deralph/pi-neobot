@@ -105,7 +105,7 @@ app.use(errorMiddleware);
 
 // III. Boot up the app:
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 9001;
 
 const start = async () => {
   try {
