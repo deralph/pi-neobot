@@ -189,16 +189,14 @@ const ChatPage: React.FC<props> = ({
     try {
       await subscribe("Subscription for one Month Neobot premium", 5, {
         productId: "neobot premium",
+        username:user?.username
       });
-      const { data } = await axiosClient.post("/subscribe-user", {
-        username: user?.username,
-      });
-      if (data) {
+     
+      
         setSubMessage("subscription successful \n Enjoy your features!");
         // if(notSubscribed){
         //   notSubscribed = false
         // }
-      }
     } catch (error) {
       setSubMessage("Unable to subscribe \n Try again later");
     }

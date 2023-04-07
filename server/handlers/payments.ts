@@ -2,6 +2,8 @@ import axios from "axios";
 import { Router } from "express";
 import PaymentModel from "../schema/payment";
 import platformAPIClient from "../services/platformAPIClient";
+import user from "../schema/user";
+
 import "../types/session";
 
 const config = {
@@ -89,6 +91,7 @@ export default function mountPaymentsEndpoints(router: Router) {
   router.post("/complete", async (req, res) => {
     const app = req.app;
 
+const metadata = req.body.metadata!.username
     const paymentId = req.body.paymentId;
     const txid = req.body.txid;
 
@@ -119,6 +122,13 @@ export default function mountPaymentsEndpoints(router: Router) {
         config
       );
       console.log(responseFromPi);
+
+      try {
+         await user.subscribeUser(metadata);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "unable to find user" });
+      }
 
       return res
         .status(200)
