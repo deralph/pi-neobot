@@ -24,7 +24,7 @@ const ChatPage: React.FC<props> = ({ signOut, user, subscribe }) => {
   const [submessage, setSubMessage] = useState<string>("");
 
   // setting up axios
-  const backend_URL = "http://localhost:5000";
+  const backend_URL = "https://neobot.online/";
   const axiosClient = axios.create({
     baseURL: `${backend_URL}`,
     timeout: 20000,

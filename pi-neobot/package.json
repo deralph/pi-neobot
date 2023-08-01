@@ -9,7 +9,8 @@
   "scripts": {
     "mainBuild": "cd.. && tsc -p .",
     "preBuild": " cd client && npm install && npm run build",
-    "start": " ts-node-dev ./src/index.ts"
+    "start": " ts-node-dev ./src/index.ts",
+    "build":"tsc -p ."
   },
   "dependencies": {
     "@types/connect-mongo": "^3.1.3",
